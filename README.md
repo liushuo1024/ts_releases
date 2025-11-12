@@ -1,8 +1,8 @@
 - 基线版本（master）：所有基础功能的实现和高度的稳定性。
 - 里程碑（tag）：所有定制版本需基于master分支上的tag开发，所有定制版本的基础功能和核心代码的bug修复必须回归至master分支。
-- 定制版本（xxx_dev）：`xxx`为具体项目名称，如`展枭`项目分支名应设为`zhanxiao_dev`。
+- 定制版本（xxx_dev）：`xxx`为具体项目名称，如`国网`项目分支名应设为`guowang_dev`。
 - 开发版本 (develop): 当前开发的稳定版本
-- 开发者分支 (xxx_dev):`xxx`为人名,如`shish`分支为`shish_dev`。
+- 开发者分支 (xxx_dev):`xxx`为人名,如`kimi`分支为`kimi_dev`。
 ## demo01 运动仿真
 ### 主要接口
 ### 📡 主要接口
