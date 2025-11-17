@@ -24,8 +24,8 @@ roslaunch vehicle_kinematics test_cmd.launch
 ### 🚀 启动命令
 ```
 roslaunch example example_02.launch
-  
-roslaunch amr_navigation amr_navigation.launch 
+roslaunch amr_navigation amr_navigation.launch  
+roslaunch example action_cilent_test.launch
 ```
 
 
