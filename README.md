@@ -33,5 +33,42 @@ roslaunch amr_navigation amr_navigation.launch
 roslaunch example action_cilent_test.launch
 ```
 
+## demo03 任务决策节点测试
+### 🚀 启动命令
+```
+roslaunch example example_03.launch
+roslaunch decision_maker decision_maker.launch 
+```
+
+## demo04 UDP接口测试
+### 🚀 启动命令
+```
+roslaunch example example_api_udp.launch 
+```
+
+## demo05 建图和定位
+### 🚀 建图启动命令
+```
+roslaunch example example_mapping.launch
+
+roslaunch funny_lidar_slam mapping_lio_sam.launch
+# 控制车移动
+roslaunch agv_sim_control key_cmd.launch
+```
+### 🚀 保存地图
+```
+rosservice call /funny_lidar_slam/save_map "map_path: ''
+split_map: false" # 保存地图到funny_lidar_slam包的data下
+```
+### 🚀 定位
+效果图
+![效果图](./resource/location.png)
+```
+roslaunch example example_mapping.launch
+
+roslaunch funny_lidar_slam localization_turing.launch
+# 控制车移动
+roslaunch agv_sim_control key_cmd.launch
+```
 
 wls仿真环境中遇到gazebo启动失败问题 `export LIBGL_ALWAYS_SOFTWARE=1`
