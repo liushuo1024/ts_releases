@@ -1,0 +1,586 @@
+{
+    "common_config?": "通用参数",
+    "common_config": {
+        "enable_visual?": "是否使用图形传感器",
+        "enable_visual": true,
+        "*enable_visual_debug?": "图像调试监控",
+        "enable_visual_debug": true
+    },
+    "cameras": [
+        {
+            "frame?": "相机标识 1,2为前置相机 3,4为后置相机 顺时针排列",
+            "frame": "camera_0",
+            "type?": "相机类型: 1:realsense 2:berxel 3:livox",
+            "type": 2,
+            "serial_num?": "前置相机序列号",
+            "serial_num": "HK100EB2B14D1061",
+            "enable?": "是否启用该相机",
+            "enable": true,
+            "image_width?": "图像宽",
+            "image_width": 640,
+            "image_height?": "图像高",
+            "image_height": 400,
+            "mode?": "图像混流模式 1:彩色  2:深度  3:混合",
+            "mode": 2
+        },
+        {
+            "frame?": "相机标识 1,2为前置相机 3,4为后置相机 顺时针排列",
+            "frame": "camera_1",
+            "type?": "相机类型: 1:realsense 2:berxel 3:livox",
+            "type": 2,
+            "serial_num?": "前置相机序列号",
+            "serial_num": "HK100EB2B14D1083",
+            "enable?": "是否启用该相机",
+            "enable": true,
+            "image_width?": "图像宽",
+            "image_width": 640,
+            "image_height?": "图像高",
+            "image_height": 400,
+            "mode?": "图像混流模式 1:彩色  2:深度  3:混合",
+            "mode": 2
+        },
+        {
+            "frame?": "相机标识 1,2为前置相机 3,4为后置相机 顺时针排列",
+            "frame": "camera_2",
+            "type?": "相机类型: 1:realsense 2:berxel 3:livox",
+            "type": 2,
+            "serial_num?": "前置相机序列号",
+            "serial_num": "HK100EB2B14D1099",
+            "enable?": "是否启用该相机",
+            "enable": true,
+            "image_width?": "图像宽",
+            "image_width": 640,
+            "image_height?": "图像高",
+            "image_height": 400,
+            "mode?": "图像混流模式 1:彩色  2:深度  3:混合",
+            "mode": 2
+        }
+    ],
+    "algorithms?": "算法模块配置",
+    "algorithms": [
+        {
+            "type?": "前向避障功能",
+            "type": "front_avoid",
+            "enable?": "是否开启该功能",
+            "enable": true,
+            "frame?": "选用相机",
+            "frame": "camera_1",
+            "front_avoid_config": {
+                "*pixel_percentage?": "像素占比",
+                "pixel_percentage": 0.7,
+                "*sub_sampling_number?": "相机分层",
+                "sub_sampling_number": 2,
+                "*threshold_world_y?": "y轴阈值",
+                "threshold_world_y": -100000,
+                "*up_num?": "分层的层数",
+                "up_num": 2,
+                "*left_delta_of_D435?": "调整右侧避障距离，单位mm",
+                "left_delta_of_D435": -200,
+                "*right_delta_of_D435?": "调整右侧避障距离，单位mm",
+                "right_delta_of_D435": 250,
+                "*camera2nosedist?": "",
+                "camera2nosedist": 0,
+                "*nums?": "多帧去噪阈值",
+                "nums": 2,
+                "*threshold_x?": "X方向的阈值",
+                "threshold_x": 400,
+                "*threshold_y?": "Y方向阈值(暂时没用上)",
+                "threshold_y": 200,
+                "*up_pile?": "第二层阈值的增益",
+                "up_pile": 50,
+                "*up_pile_down?": "第一层阈值的增益",
+                "up_pile_down": 50,
+                "*up_to_nums?": "层数的阈值比例",
+                "up_to_nums": [
+                    1.2,
+                    2.0
+                ],
+                "*area_threshold?": "筛选障碍物面积阈值",
+                "area_threshold": [
+                    80,
+                    50,
+                    80,
+                    150,
+                    80,
+                    50,
+                    80,
+                    150
+                ],
+                "*threshold_line?": "划分障碍物面积筛选区域",
+                "threshold_line": [
+                    100,
+                    250,
+                    300
+                ],
+                "*ROI_STRAIGHT_UP?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_STRAIGHT_UP": [
+                    100,
+                    0,
+                    400,
+                    200
+                ],
+                "*ROI_STRAIGHT_DOWN?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_STRAIGHT_DOWN": [
+                    100,
+                    200,
+                    500,
+                    200
+                ],
+                "*ROI_LEFT_UP?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_LEFT_UP": [
+                    200,
+                    0,
+                    200,
+                    200
+                ],
+                "*ROI_LEFT_DOWN?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_LEFT_DOWN": [
+                    40,
+                    200,
+                    300,
+                    100
+                ],
+                "*ROI_RIGHT_UP?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_RIGHT_UP": [
+                    200,
+                    0,
+                    200,
+                    200
+                ],
+                "*ROI_RIGHT_DOWN?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_RIGHT_DOWN": [
+                    300,
+                    200,
+                    300,
+                    100
+                ],
+                "*ROI_WEAKEN_UP?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_WEAKEN_UP": [
+                    200,
+                    0,
+                    200,
+                    200
+                ],
+                "*ROI_WEAKEN_DOWN?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_WEAKEN_DOWN": [
+                    100,
+                    200,
+                    400,
+                    100
+                ]
+            }
+        },
+        {
+            "type?": "前向左侧避障功能",
+            "type": "front_left_avoid",
+            "enable?": "是否开启该功能",
+            "enable": true,
+            "frame?": "选用相机",
+            "frame": "camera_0",
+            "front_avoid_config": {
+                "*pixel_percentage?": "像素占比",
+                "pixel_percentage": 0.7,
+                "*sub_sampling_number?": "相机分层",
+                "sub_sampling_number": 2,
+                "*threshold_world_y?": "y轴阈值",
+                "threshold_world_y": -100000,
+                "*up_num?": "分层的层数",
+                "up_num": 2,
+                "*left_delta_of_D435?": "调整右侧避障距离，单位mm",
+                "left_delta_of_D435": -200,
+                "*right_delta_of_D435?": "调整右侧避障距离，单位mm",
+                "right_delta_of_D435": 250,
+                "*camera2nosedist?": "",
+                "camera2nosedist": 0,
+                "*nums?": "多帧去噪阈值",
+                "nums": 2,
+                "*threshold_x?": "X方向的阈值",
+                "threshold_x": 400,
+                "*threshold_y?": "Y方向阈值(暂时没用上)",
+                "threshold_y": 50,
+                "*up_pile?": "第二层阈值的增益",
+                "up_pile": 50,
+                "*up_pile_down?": "第一层阈值的增益",
+                "up_pile_down": 50,
+                "*up_to_nums?": "层数的阈值比例",
+                "up_to_nums": [
+                    1.2,
+                    2.0
+                ],
+                "*area_threshold?": "筛选障碍物面积阈值",
+                "area_threshold": [
+                    80,
+                    50,
+                    80,
+                    150,
+                    80,
+                    50,
+                    80,
+                    150
+                ],
+                "*threshold_line?": "划分障碍物面积筛选区域",
+                "threshold_line": [
+                    100,
+                    250,
+                    300
+                ],
+                "*ROI_STRAIGHT_UP?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_STRAIGHT_UP": [
+                    200,
+                    0,
+                    200,
+                    200
+                ],
+                "*ROI_STRAIGHT_DOWN?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_STRAIGHT_DOWN": [
+                    100,
+                    200,
+                    400,
+                    200
+                ],
+                "*ROI_LEFT_UP?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_LEFT_UP": [
+                    200,
+                    0,
+                    200,
+                    200
+                ],
+                "*ROI_LEFT_DOWN?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_LEFT_DOWN": [
+                    40,
+                    200,
+                    300,
+                    200
+                ],
+                "*ROI_RIGHT_UP?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_RIGHT_UP": [
+                    200,
+                    0,
+                    200,
+                    200
+                ],
+                "*ROI_RIGHT_DOWN?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_RIGHT_DOWN": [
+                    300,
+                    200,
+                    300,
+                    200
+                ],
+                "*ROI_WEAKEN_UP?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_WEAKEN_UP": [
+                    200,
+                    0,
+                    200,
+                    200
+                ],
+                "*ROI_WEAKEN_DOWN?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_WEAKEN_DOWN": [
+                    100,
+                    200,
+                    400,
+                    200
+                ]
+            }
+        },
+        {
+            "type?": "前向右侧避障功能",
+            "type": "front_right_avoid",
+            "enable?": "是否开启该功能",
+            "enable": true,
+            "frame?": "选用相机",
+            "frame": "camera_2",
+            "front_avoid_config": {
+                "*pixel_percentage?": "像素占比",
+                "pixel_percentage": 0.7,
+                "*sub_sampling_number?": "相机分层",
+                "sub_sampling_number": 2,
+                "*threshold_world_y?": "y轴阈值",
+                "threshold_world_y": -100000,
+                "*up_num?": "分层的层数",
+                "up_num": 2,
+                "*left_delta_of_D435?": "调整右侧避障距离，单位mm",
+                "left_delta_of_D435": -200,
+                "*right_delta_of_D435?": "调整右侧避障距离，单位mm",
+                "right_delta_of_D435": 250,
+                "*camera2nosedist?": "",
+                "camera2nosedist": 0,
+                "*nums?": "多帧去噪阈值",
+                "nums": 2,
+                "*threshold_x?": "X方向的阈值",
+                "threshold_x": 400,
+                "*threshold_y?": "Y方向阈值(暂时没用上)",
+                "threshold_y": 200,
+                "*up_pile?": "第二层阈值的增益",
+                "up_pile": 50,
+                "*up_pile_down?": "第一层阈值的增益",
+                "up_pile_down": 50,
+                "*up_to_nums?": "层数的阈值比例",
+                "up_to_nums": [
+                    1.2,
+                    2.0
+                ],
+                "*area_threshold?": "筛选障碍物面积阈值",
+                "area_threshold": [
+                    80,
+                    50,
+                    80,
+                    150,
+                    80,
+                    50,
+                    80,
+                    150
+                ],
+                "*threshold_line?": "划分障碍物面积筛选区域",
+                "threshold_line": [
+                    100,
+                    250,
+                    300
+                ],
+                "*ROI_STRAIGHT_UP?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_STRAIGHT_UP": [
+                    200,
+                    0,
+                    200,
+                    200
+                ],
+                "*ROI_STRAIGHT_DOWN?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_STRAIGHT_DOWN": [
+                    100,
+                    200,
+                    400,
+                    200
+                ],
+                "*ROI_LEFT_UP?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_LEFT_UP": [
+                    200,
+                    0,
+                    200,
+                    200
+                ],
+                "*ROI_LEFT_DOWN?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_LEFT_DOWN": [
+                    40,
+                    200,
+                    300,
+                    200
+                ],
+                "*ROI_RIGHT_UP?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_RIGHT_UP": [
+                    200,
+                    0,
+                    200,
+                    200
+                ],
+                "*ROI_RIGHT_DOWN?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_RIGHT_DOWN": [
+                    300,
+                    200,
+                    300,
+                    200
+                ],
+                "*ROI_WEAKEN_UP?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_WEAKEN_UP": [
+                    200,
+                    0,
+                    200,
+                    200
+                ],
+                "*ROI_WEAKEN_DOWN?": "感兴趣区域左上角xy横纵向距离",
+                "ROI_WEAKEN_DOWN": [
+                    100,
+                    200,
+                    400,
+                    200
+                ]
+            }
+        },
+        {
+            "type?": "后向避障功能",
+            "type": "back_avoid",
+            "enable?": "是否开启该功能",
+            "enable": true,
+            "frame?": "选用相机",
+            "frame": "camera_4",
+            "back_avoid_config": {
+                "fork_leg_up_area?": "叉腿抬起时相机空间避障碍区域，以相机左眼为原点单位毫米",
+                "fork_leg_up_area": {
+                    "up:?": "相机空间上边界",
+                    "up": 1000,
+                    "down:?": "相机空间下边界",
+                    "down": 130,
+                    "left:?": "相机空间左边界",
+                    "left": 700,
+                    "right:?": "相机空间右边界",
+                    "right": 300
+                },
+                "fork_leg_down_area?": "叉腿放下时相机空间避障碍区域，以相机左眼为原点单位毫米",
+                "fork_leg_down_area": {
+                    "up:?": "相机空间上边界",
+                    "up": 10,
+                    "down:?": "相机空间下边界",
+                    "down": 10,
+                    "left:?": "相机空间左边界",
+                    "left": 30,
+                    "right:?": "相机空间右边界",
+                    "right": 30
+                },
+                "area_pixel_num?": "最小障碍物面积过滤",
+                "area_pixel_num": 10,
+                "area_pixel_percent?": "障碍物面积百分比",
+                "area_pixel_percent": 0.005,
+                "crop_area_max_time?": "超板记录最大时间，单位秒",
+                "crop_area_max_time": 80,
+                "fork_crop_area?": "叉尖避障固定立方体过滤区域，通常为叉尖上方超板使用，单位米",
+                "fork_crop_area": {
+                    "x_min?": "立方体x_min",
+                    "x_min": -0.3,
+                    "x_max?": "立方体x_max",
+                    "x_max": 0.3,
+                    "y_min?": "立方体y_min",
+                    "y_min": -0.5,
+                    "y_max?": "立方体y_max",
+                    "y_max": -0.015,
+                    "z_min?": "立方体z_min",
+                    "z_min": 0,
+                    "z_max?": "立方体z_max",
+                    "z_max": 0.2
+                }
+            }
+        },
+        {
+            "type?": "右侧叉腿后向避障功能",
+            "type": "right_back_avoid",
+            "enable?": "是否开启该功能",
+            "enable": true,
+            "frame?": "选用相机",
+            "frame": "camera_3",
+            "right_back_avoid_config": {
+                "fork_leg_up_area?": "叉腿抬起时相机空间避障碍区域，以相机左眼为原点单位毫米",
+                "fork_leg_up_area": {
+                    "up:?": "相机空间上边界",
+                    "up": 1000,
+                    "down:?": "相机空间下边界",
+                    "down": 130,
+                    "left:?": "相机空间左边界",
+                    "left": 300,
+                    "right:?": "相机空间右边界",
+                    "right": 700
+                },
+                "fork_leg_down_area?": "叉腿放下时相机空间避障碍区域，以相机左眼为原点单位毫米",
+                "fork_leg_down_area": {
+                    "up:?": "相机空间上边界",
+                    "up": 10,
+                    "down:?": "相机空间下边界",
+                    "down": 10,
+                    "left:?": "相机空间左边界",
+                    "left": 30,
+                    "right:?": "相机空间右边界",
+                    "right": 30
+                },
+                "area_pixel_num?": "最小障碍物面积过滤",
+                "area_pixel_num": 10,
+                "area_pixel_percent?": "障碍物面积百分比",
+                "area_pixel_percent": 0.005,
+                "crop_area_max_time?": "超板记录最大时间，单位秒",
+                "crop_area_max_time": 80,
+                "fork_crop_area?": "叉尖避障固定立方体过滤区域，通常为叉尖上方超板使用，单位米",
+                "fork_crop_area": {
+                    "x_min?": "立方体x_min",
+                    "x_min": -0.3,
+                    "x_max?": "立方体x_max",
+                    "x_max": 0.3,
+                    "y_min?": "立方体y_min",
+                    "y_min": -0.5,
+                    "y_max?": "立方体y_max",
+                    "y_max": -0.015,
+                    "z_min?": "立方体z_min",
+                    "z_min": 0,
+                    "z_max?": "立方体z_max",
+                    "z_max": 0.2
+                }
+            }
+        },
+        {
+            "type?": "托盘识别功能",
+            "type": "pallet_center_detect",
+            "enable?": "是否开启该功能",
+            "enable": false,
+            "frame?": "选用相机",
+            "frame": "camera_5",
+            "pallet_center_detect": {
+                "roi_area?": "识别相机roi区域,相机正前方为x轴正方形",
+                "roi_area": {
+                    "x_min?": "立方体x_min",
+                    "x_min": 1.5,
+                    "x_max?": "立方体x_max",
+                    "x_max": 3.0,
+                    "y_min?": "立方体y_min",
+                    "y_min": -1.0,
+                    "y_max?": "立方体y_max",
+                    "y_max": 1.0,
+                    "z_min?": "立方体z_min",
+                    "z_min": -0.5,
+                    "z_max?": "立方体z_max",
+                    "z_max": -0.35,
+                    "height_compensation?": "高度补偿",
+                    "height_compensation": 0.0
+                },
+                "leg_length?": "距离",
+                "leg_length": 0.0,
+                "hole2_width?": "第二种规格托盘宽度",
+                "hole2_width": 0.0,
+                "hole3_width?": "第三种规格托盘宽度",
+                "hole3_width": 0.0,
+                "min_score?": "识别算法最小得分",
+                "min_score": 0.6,
+                "hole_width?": "托盘孔洞宽度",
+                "hole_width": 0.5,
+                "hole_height?": "托盘孔洞高度",
+                "hole_height": 0.1,
+                "hole_margin?": "孔洞算法误差阈值",
+                "hole_margin": 0.1,
+                "pallet_length?": "托盘长度",
+                "pallet_length": 0.7,
+                "pose_diff_dist?": "托盘位置与预期位置水平偏差阈值(米)",
+                "pose_diff_dist": 0.6,
+                "pose_diff_yaw?": "托盘位置与预期位置角度偏差阈值(弧度)",
+                "pose_diff_yaw": 0.5
+            }
+        },
+        {
+            "type?": "april_tag功能",
+            "type": "april_tag",
+            "enable?": "是否开启该功能",
+            "enable": false,
+            "frame?": "选用相机",
+            "frame": "camera_8",
+            "april_tag": {}
+        },
+        {
+            "type?": "前向点云功能避障功能",
+            "type": "front_cloud_avoid",
+            "enable?": "是否开启该功能",
+            "enable": false,
+            "frame?": "选用相机",
+            "frame": "camera_1",
+            "front_cloud_avoid_config": {
+                "area_pixel_num?": "最小障碍物面积过滤",
+                "area_pixel_num": 10,
+                "camera_angle?": "相机安装角度(从侧面看)",
+                "camera_angle": 30.0,
+                "filter_up?": "最高截取高度",
+                "filter_up": 1.1,
+                "filter_down?": "最低截取高度",
+                "filter_down": -1.65,
+                "filter_front?": "前向最远截取距离",
+                "filter_front": 5,
+                "filter_back?": "后向最远截取距离",
+                "filter_back": 0.1,
+                "filter_left?": "左侧最远截取距离",
+                "filter_left": -1,
+                "filter_right?": "右侧最远截取距离",
+                "filter_right": 1
+            }
+        }
+    ]
+}

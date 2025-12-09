@@ -1,0 +1,127 @@
+{
+  "common_option?": "通用配置",
+  "common_option": {
+    "enable_debug?": "是否启用本地库位地图",
+    "enable_debug": false,
+    "*http_get_global_map_url?": "库位地图获取接口",
+    "http_get_global_map_url": "/storage/get",
+    "*http_update_global_map_url?": "库位地图编辑接口",
+    "http_update_global_map_url": "/storage/laser/edit"
+  },
+  "*motion_filter_option?": "运动滤波",
+  "motion_filter_option": {
+    "max_translation?": "位移滤波",
+    "max_translation": 0.1,
+    "max_angle?": "角度滤波",
+    "max_angle": 0.1,
+    "max_time?": "时间滤波",
+    "max_time": 1.0
+  },
+  "laser?": "各激光配置",
+  "laser": [
+    {
+      "frame_id?": "激光库位检测使用avoid_laser_1",
+      "frame_id": "avoid_laser_1",
+      "scan_sample_step?": "激光采样",
+      "scan_sample_step": 1,
+      "*samples_per_scan?": "每帧激光点束",
+      "samples_per_scan": 1,
+      "angle_min?": "激光最小检测角度",
+      "angle_min": -2.094395102,
+      "angle_max?": "激光最大检测角度",
+      "angle_max": 2.094395102,
+      "angle_increment?": "激光角度增量",
+      "angle_increment": 0.01745,
+      "range_min?": "激光最小检测范围",
+      "range_min": 0.5,
+      "range_max?": "激光最大检测范围",
+      "range_max": 8,
+      "filter": {
+        "positive?": "是否正向安装",
+        "positive": true,
+        "angle_min?": "过滤最小角度",
+        "angle_min": -2.094395102,
+        "angle_max?": "过滤最大角度",
+        "angle_max": 2.094395102,
+        "filter_laser_point?": "激光过滤点数",
+        "filter_laser_point": 10
+      }
+    },
+    {
+      "frame_id?": "激光托盘识别使用avoid_laser_3",
+      "frame_id": "avoid_laser_3",
+      "scan_sample_step?": "激光采样",
+      "scan_sample_step": 1,
+      "*samples_per_scan?": "每帧激光点束",
+      "samples_per_scan": 1,
+      "angle_min?": "激光最小检测角度",
+      "angle_min": -2.094395102,
+      "angle_max?": "激光最大检测角度",
+      "angle_max": 2.094395102,
+      "angle_increment?": "激光角度增量",
+      "angle_increment": 0.01745,
+      "range_min?": "激光最小检测范围",
+      "range_min": 0.5,
+      "range_max?": "激光最大检测范围",
+      "range_max": 8,
+      "filter": {
+        "positive?": "是否正向安装",
+        "positive": false,
+        "angle_min?": "过滤最小角度",
+        "angle_min": -2.094395102,
+        "angle_max?": "过滤最大角度",
+        "angle_max": 2.094395102,
+        "filter_laser_point?": "激光过滤点数",
+        "filter_laser_point": 10
+      }
+    }
+  ],
+  "storage_detect_option?": "激光库位检测选项",
+  "storage_detect_option": {
+    "enable?": "是否启用库位检测",
+    "enable": false,
+    "*enable_visualize?": "库位可视化选项",
+    "enable_visualize": false,
+    "frame_id?": "激光库位检测使用激光",
+    "frame_id": [
+      "avoid_laser_1"
+    ],
+    "*resolution?": "库位分辨率",
+    "resolution": 0.05,
+    "detect_range?": "库位检测范围",
+    "detect_range": 8,
+    "*hit_odds?": "库位命中概率",
+    "hit_odds": 0.88,
+    "*hit_probability_margin?": "占据概率",
+    "hit_probability_margin": 0.5,
+    "min_hit_area_ratio?": "占据百分比",
+    "min_hit_area_ratio": 0.01,
+    "*miss_odds?": "库位miss概率",
+    "miss_odds": 0.4,
+    "*miss_probability_margin?": "空闲概率",
+    "miss_probability_margin": 0.45,
+    "min_miss_area_ratio?": "空闲百分比",
+    "min_miss_area_ratio": 0.65
+  },
+  "pallet_detect_option?": "激光托盘识别选项",
+  "pallet_detect_option": {
+    "enable?": "是否启用激光托盘识别",
+    "enable": false,
+    "frame_id?": "激光托盘识别使用激光",
+    "frame_id": [
+      "avoid_laser_3"
+    ],
+    "pallet_kind?": "托盘类型: 0:叉车托盘 1:顶升4脚托盘",
+    "pallet_kind": 0,
+    "hole_width?": "托盘孔洞宽度",
+    "hole_width": 0.5,
+    "hole_margin?": "孔洞算法误差阈值",
+    "hole_margin": 0.08,
+    "pallet_length?": "托盘长度",
+    "pallet_length": 0.9,
+    "pose_diff_dist?": "托盘位置与预期位置水平偏差阈值(米)",
+    "pose_diff_dist": 0.5,
+    "pose_diff_yaw?": "托盘位置与预期位置角度偏差阈值(弧度)",
+    "pose_diff_yaw": 0.5
+  }
+}

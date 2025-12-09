@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="example" type="action_cilent_test" name="action_cilent_test" output="screen">
+    </node>
+</launch>

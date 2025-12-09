@@ -3,6 +3,11 @@
 - 定制版本（xxx_dev）：`xxx`为具体项目名称，如`国网`项目分支名应设为`guowang_dev`。
 - 开发版本 (develop): 当前开发的稳定版本
 - 开发者分支 (xxx_dev):`xxx`为人名,如`kimi`分支为`kimi_dev`。
+
+# 后续使用方式
+1. 将 config 文件夹放到home目录下;  
+2. 解压ts_robot.zip 后可以直接source ts_robot/setup.bash 后启动launch
+3. src/example 下是example示例源文件
 ## demo01 运动仿真
 ### 主要接口
 ### 📡 主要接口

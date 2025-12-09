@@ -1,0 +1,71 @@
+{
+  "tf_option?": "坐标定位",
+  "tf_option": {
+    "*enable_shelf_tf?": "是否使用定位货架",
+    "enable_shelf_tf": false,
+    "*enable_loclizer_tf?": "是否使用定位",
+    "enable_loclizer_tf": true,
+    "enable_record_tf?": "是否记录",
+    "enable_record_tf": false
+  },
+  "*low_power_mode_option?": "低功耗配置",
+  "low_power_mode_option": {
+    "enable_low_power_mode?": "是否使用低功耗功能",
+    "enable_low_power_mode": false,
+    "waiting_to_enter_time?": "进入低功耗等待时间",
+    "waiting_to_enter_time": 600
+  },
+  "*finishing_mode_option?": "低功耗配置",
+  "finishing_mode_option": {
+    "time_out": 60
+  },
+  "*others_option?": "其他配置",
+  "others_option": {
+    "need_rotate_theta?": "系统判定认为需要旋转并停止的角度，单位 rad",
+    "need_rotate_theta": 0.6
+  },
+  "fork_lift_logic_option?": "叉车配置",
+  "fork_lift_logic_option": {
+    "extend_threshold?": "取货时延伸行走距离(m)",
+    "extend_threshold": 0.01,
+    "charge_distance_offset?": "充电补偿距离(m)",
+    "charge_distance_offset": 0.0,
+    "enable_lose_pallet_check?": "掉货检测",
+    "enable_lose_pallet_check": false,
+    "enable_check_weight?": "是否支持重量检测",
+    "enable_check_weight": false,
+    "enable_pallet_stablizer?": "叉车托盘整定",
+    "enable_pallet_stablizer": false,
+    "enable_measure_size?": "堆高车尺寸校验",
+    "enable_measure_size": false,
+    "measure_size_adjust_lift?": "堆高车尺寸校验提升调节高度 米",
+    "measure_size_adjust_lift": 0.15,
+    "enable_heap_fork_extend?": "堆高车货叉先抬升后下降",
+    "enable_heap_fork_extend": false,
+    "enable_fork_tile?": "是否支持叉齿倾斜",
+    "enable_fork_tile": true,
+    "*fork_tile_1?": "叉齿水平角度",
+    "fork_tile_1": -3.0,
+    "*fork_tile_2?": "叉齿水平向上倾斜角度",
+    "fork_tile_2": -3.0,
+    "enable_auto_fork_up_down?": "运行过程货叉自动升降",
+    "enable_auto_fork_up_down": false,
+    "*auto_fork_up_margin?": "自动抬升叉腿阈值(距离起点)",
+    "auto_fork_up_margin": 2.0,
+    "*auto_fork_down_margin?": "自动下降叉腿阈值(距离取货点)",
+    "auto_fork_down_margin": 10.0,
+    "*klost_weighing_threshold?": "重量损失阈值",
+    "klost_weighing_threshold": 10
+  },
+  "jack_up_logic_option?": "顶升配置",
+  "jack_up_logic_option": {
+    "enable_pallet_zero?": "启用托盘归零功能",
+    "enable_pallet_zero": true,
+    "enable_pallet_stablizer?": "启用激光匹配托盘位置",
+    "enable_pallet_stablizer": false,
+    "enable_car_back?": "启用整定后找码功能",
+    "enable_car_back": false,
+    "stabilize_mode?": "整定模式：0-无 1-旋转整定 2-Z字形整定",
+    "stabilize_mode": 1
+  }
+}

@@ -1,0 +1,16 @@
+<?xml version='1.0'?>
+
+<launch>
+  <!-- 使用仿真时间 -->
+  <param name="/use_sim_time" value="true"/>
+  <!-- 启动双机器人仿真控制 -->
+  <include file="$(find agv_description)/launch/dual_sim_control.launch"/>
+  
+  <!-- 启动AGV仿真控制 -->
+  <include file="$(find agv_sim_control)/launch/agv_sim_control.launch"/>
+  
+  <!-- 启动双机器人运动学 -->
+  <!-- <include file="$(find vehicle_kinematics)/launch/dual_kinematics.launch"/> -->
+  <!-- 启动避障 -->
+  <include file="$(find amr_avoid)/launch/amr_avoid.launch"/>
+</launch>

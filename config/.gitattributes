@@ -1,0 +1,12 @@
+software/*.deb filter=lfs diff=lfs merge=lfs -text
+map/*.pbstream filter=lfs diff=lfs merge=lfs -text
+usb_can/*.so filter=lfs diff=lfs merge=lfs -text
+usb_can/*.a filter=lfs diff=lfs merge=lfs -text
+basic_config/*.caffemodel filter=lfs diff=lfs merge=lfs -text
+basic_config/*.prototxt filter=lfs diff=lfs merge=lfs -text
+voice/res/xtts/*.jet filter=lfs diff=lfs merge=lfs -text
+voice/deb/*.deb filter=lfs diff=lfs merge=lfs -text
+voice/file/*.mp3 filter=lfs diff=lfs merge=lfs -text
+voice/file/*.wav filter=lfs diff=lfs merge=lfs -text
+jsoncpp/*.a filter=lfs diff=lfs merge=lfs -text
+script/*Device filter=lfs diff=lfs merge=lfs -text

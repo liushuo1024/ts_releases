@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<launch>
+    <!-- <param name="use_sim_time" value="true"/> -->
+    <!-- set logs -->
+    <!-- <env name="ROSCONSOLE_CONFIG_FILE" value="$(find amr_common)/config/amr_rosconsole.conf"/> -->
+
+    <!-- Laser Sensors Node -->
+    <!-- <include file="/home/amr/config/launch/amr_sensor.launch"/> -->
+    <!-- <include file="$(env HOME)/config/launch/amr_sensor.launch"/> -->  
+    <!-- Rosbag Node -->
+    <!-- <include file="/home/amr/config/launch/amr_rosbag.launch"/> -->
+
+    <!-- Embedded Node -->
+    <!-- <include file="$(find amr_embedded)/launch/amr_embedded.launch"/> -->
+
+    <!-- Communicate Node -->
+	    <!-- <include file="$(find amr_communicate)/launch/amr_communicate.launch"/> -->
+    
+    <!-- Navigation Node -->
+    <include file="$(find amr_navigation)/launch/amr_navigation.launch"/>
+
+    <!-- Decision maker Node -->
+    <include file="$(find decision_maker)/launch/decision_maker.launch"/>
+
+    <!-- Action Node -->
+    <include file="$(find amr_action)/launch/amr_action.launch"/>  
+
+    <!-- Avoid Node -->
+    <include file="$(find amr_avoid)/launch/amr_avoid.launch"/>
+
+    <!-- Diagnostic Node -->
+    <include file="$(find amr_diagnostic)/launch/amr_diagnostic.launch"/>
+
+    <!-- Calibration Node -->
+	    <!-- <include file="$(find amr_calibration)/launch/amr_calibration.launch"/> -->
+
+    <!-- Visual Node -->
+    <!-- <include file="$(find amr_visual)/launch/amr_visual.launch"/> -->
+
+    <!-- Storage Node -->
+    <include file="$(find amr_storage)/launch/amr_storage.launch"/>
+
+    <!-- Localizer Nodes -->
+    <include file="$(find amr_localizer)/launch/amr_localizer.launch"/>
+
+    <!--FakeServer Node-->
+    <include file= "$(find fake_server)/launch/fake_server.launch"/>
+
+    <!--cartographer nodes -->
+    <!-- <include file="$(find amr_common)/launch/carto/amr_fork_carto_localizer.launch"/> -->
+
+
+</launch>

@@ -1,0 +1,151 @@
+{
+    "can_type?": "can卡类型 1:zlg 2:emuc 3:like",
+    "can_type": 3,
+    "can_channel": 3,
+    "channel_baudrate": {
+        "can0": 125,
+        "can1": 125
+    },
+    "serial": [
+        {
+            "channel": 0,
+            "port": "/dev/ttyS0",
+            "baudrate": 9600
+        }
+    ],
+    "device_list": [
+	 {
+            "name": "lindemr15",
+            "install_device": [
+                {
+                    "child_name": "lindemr15",
+                    "device_param": {
+                        "node_id": 0,
+                        "channel": 0
+                    }
+                }
+            ]
+        },
+        {
+            "name": "io_blueone",
+            "install_device": [
+                {
+                    "child_name": "io_blueone",
+                    "device_param": {
+                        "node_id": 10,
+                        "channel": 92
+                    }
+                }
+            ]
+        },
+	{
+            "name": "wit905_driver",
+            "install_device": [
+                {
+                    "child_name": "wit905_driver",
+                    "device_param": {
+                        "node_id": 0,
+                        "channel": 0
+                    }
+                }
+            ]
+        },
+	{
+            "name": "bmmsk34_encoder",
+            "install_device": [
+                {
+                    "child_name": "height_encoder",
+                    "device_param": {
+                        "node_id": 18,
+                        "channel": 1
+                    }
+                }
+            ]
+        },
+        {
+            "name":"liche_encoder",
+            "install_device": [
+                {
+                    "child_name": "lateral_encoder",
+                    "device_param": {
+                        "node_id": 19,
+                        "channel": 1,
+                        "mode": 0
+                    }
+                }
+            ]
+        }
+ ],
+    "io_config": [
+        {
+            "io_board_info": "io_blueone",
+            "io_map": {
+                "di_1?": "防撞条: 1",
+                "di_1": 1,
+                "di_2?": "复位: 29",
+                "di_2": 29,
+                "di_3?": "右叉腿光电: 14",
+                "di_3": 14,
+                "di_4?": "左叉腿光电: 13",
+                "di_4": 13,
+                "di_5?": "到位挡板右: 16",
+                "di_5": 16,
+                "di_6?": "到位挡板左: 15",
+                "di_6": 15,
+                "di_7?": "null",
+                "di_7": 0,
+                "di_8?": "null",
+                "di_8": 28,
+		"di_9?": "前蓝海out1",
+                "di_9": 102,
+                "di_10?": "前蓝海out2",
+                "di_10": 103,
+                "di_11?": "左蓝海out1",
+                "di_11":104,
+                "di_12?": "左蓝海out2",
+                "di_12":105,
+                "di_13?": "右蓝海out1",
+                "di_13":106,
+                "di_14?": "右蓝海out2",
+                "di_14":107,
+		"di_15?": "null",
+		"di_15":108,
+		"di_16?": "null",
+		"di_16":109,
+                "do_1?": "左转向灯: 78",
+                "do_1": 78,
+                "do_2?": "右转向灯: 79",
+                "do_2": 79,
+                "do_3?": "自动充电: 80",
+                "do_3": 80,
+                "do_4?": "双绿灯: 61",
+                "do_4": 0,
+                "do_5?": "双红灯: 62",
+                "do_5": 0,
+                "do_6?": "左黄灯: 63",
+                "do_6": 0,
+                "do_7?": "右黄灯: 64",
+                "do_7": 0,
+                "do_8?": "双蓝灯: 65",
+                "do_8": 0,
+		"do_9?": "前蓝海in1",
+                "do_9": 0,
+                "do_10?": "前蓝海in2",
+                "do_10": 0,
+                "do_11?": "左蓝海in1",
+                "do_11":0,
+                "do_12?": "左蓝海in2",
+                "do_12":0,
+                "do_13?": "右蓝海in1",
+                "do_13":0,
+                "do_14?": "右蓝海in2",
+                "do_14":0,
+		"do_15?": "null",
+		"do_15":0,
+		"do_16?": "null",
+                "do_16":0
+
+            }
+        }
+    ]
+}

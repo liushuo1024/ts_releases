@@ -1,0 +1,16 @@
+<launch>
+
+  <arg name="sensor" default="ppf_slam" doc="sensor type [ppf_ref, ppf_slam, dppf, hikvs, sick, uam]"/>
+  <include file="/home/amr/config/launch/sensor/$(arg sensor).launch"/> 
+
+   <arg name="avoid_sensor" default="LDS-avoid-1" doc="sensor type [sick_tim_240, TG]"/>
+  <include file="/home/amr/config/launch/sensor/$(arg avoid_sensor).launch"/>
+
+   <arg name="avoid_sensor_2" default="LDS-avoid-4" doc="sensor type [sick_tim_240, TG,LDS-E300-E]"/>
+  <include file="/home/amr/config/launch/sensor/$(arg avoid_sensor_2).launch"/>
+
+   <arg name="avoid_sensor_3" default="LDS-avoid-5" doc="sensor type [sick_tim_240, TG,LDS-E300-E]"/>
+  <include file="/home/amr/config/launch/sensor/$(arg avoid_sensor_3).launch"/>
+
+
+</launch>

@@ -1,0 +1,58 @@
+{
+  "*can_control_period?": "can 收发的频率",
+  "can_control_period": 50.0,
+  "clear_cycle_number?": "每隔几次周期清除can数据",
+  "clear_cycle_number": 5,
+  "*sensor?": "避障传感器",
+  "sensor": {
+    "use_fork_avoid?": "是否使用叉腿避障",
+    "use_fork_avoid": true,
+    "fork_avoid_dist?": "叉腿避障距离",
+    "fork_avoid_dist": 0.4,
+    "fork_io_positive?": "叉腿io是否为高电平触发",
+    "fork_io_positive": true
+  },
+  "*inertia_compensation?": "惯性补偿设置",
+  "inertia_compensation": {
+    "enable_inertia_compensation?": "是否使用惯性补偿",
+    "enable_inertia_compensation": false,
+    "linear_velocity_coefficient?": "线速度补偿系数",
+    "linear_velocity_coefficient": 0.012831,
+    "omega_coefficient?": "角速度补偿系数",
+    "omega_coefficient": 0.177217
+  },
+  "maunal_ctrl?": "遥控手动控制参数",
+  "maunal_ctrl": {
+    "pallet_up_speed?": "托盘上升速度m/s",
+    "pallet_up_speed": -0.008,
+    "pallet_down_speed?": "托盘下降速度m/s",
+    "pallet_down_speed": 0.008,
+    "pallet_rotate_speed?": "托盘旋转速度rad/s",
+    "pallet_rotate_speed": 0.3,
+    "forward_speed?": "前进速度m/s",
+    "forward_speed": 0.5,
+    "backward_speed?": "后退速度m/s",
+    "backward_speed": -0.5,
+    "rotate_left_speed?": "左旋转速度rad/s",
+    "rotate_left_speed": -0.4,
+    "rotate_right_speed?": "右旋转速度rad/s",
+    "rotate_right_speed": 0.4,
+    "*led_type?": "led灯色1/2/4=红绿黄",
+    "led_type": 1,
+    "*audio_type?": "音频类型",
+    "audio_type": 1,
+    "*enter_low_power?": "进入低功耗",
+    "enter_low_power": false,
+    "*enable_charge?": "充电",
+    "enable_charge": false
+  },
+  "motor_sign?": "电机方向",
+  "motor_sign": {
+    "set_left_sign": 1,
+    "set_right_sign": 1,
+    "feedback_left_sign": 1,
+    "feedback_right_sign": 1,
+    "rotate_motor_sign": 1,
+    "lift_motor_sign": 1
+  }
+}

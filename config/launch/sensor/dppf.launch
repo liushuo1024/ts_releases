@@ -1,0 +1,23 @@
+ <launch>
+  <node pkg="pepperl_fuchs_r2000" type="r2000_node" name="r2000_node_1" respawn="true">
+    <param name="scanner_ip" value="192.168.0.20"/>
+    <param name="frame_id" value="laser1"/>
+    <param name="scan_frequency" value="20"/>
+    <param name="samples_per_scan" value="4200"/>
+    <param name="angle_min" value="-2.3562"/>
+    <param name="angle_max" value="2.3562"/>
+    <remap from="scan" to="scan_1" />
+  </node>
+
+  <node pkg="pepperl_fuchs_r2000" type="r2000_node" name="r2000_node_2" respawn="true">
+    <param name="scanner_ip" value="192.168.0.21"/>
+    <param name="frame_id" value="laser2"/>
+    <param name="scan_frequency" value="20"/>
+    <param name="samples_per_scan" value="4200"/>
+    <param name="angle_min" value="-2.3562"/>
+    <param name="angle_max" value="2.3562"/>
+    <remap from="scan" to="scan_2" />
+  </node>
+
+
+</launch>
