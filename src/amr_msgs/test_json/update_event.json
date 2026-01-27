@@ -1,0 +1,23 @@
+{
+    "agvId": "001",
+    "nodeId": 222,
+    "plateId": "No-1",
+    "plateAngle": 0,
+    "speed": 1.0,
+    "x": 1.1,
+    "y": 2.2,
+    "yaw": 45.0,
+    "liftHeight": 0.2,
+    "agvStatus": 1,
+    "currentSectionId": 0,
+    "switchSectionId": 0,
+    "errorCode": [
+        {
+            "id": "",
+            "errorCode": 0
+        }
+    ],
+    "battery": 100,
+    "taskType": "ForkTaskRequest",
+    "taskSequence": 1
+}

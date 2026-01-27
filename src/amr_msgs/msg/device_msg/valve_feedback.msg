@@ -1,0 +1,13 @@
+# 时间戳
+uint32 time_stamp
+# 数据
+bool channel_0
+bool channel_1
+bool channel_2
+bool channel_3
+bool channel_4
+bool channel_5
+bool channel_6
+bool channel_7
+# 错误码
+uint16 error_code

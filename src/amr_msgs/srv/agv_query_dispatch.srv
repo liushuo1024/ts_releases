@@ -1,0 +1,6 @@
+# request
+string type  # 获取数据类型
+--- 
+#response
+string data  #数据内容
+ 

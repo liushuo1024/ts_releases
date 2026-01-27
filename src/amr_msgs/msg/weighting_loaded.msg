@@ -1,0 +1,5 @@
+time stamp
+int32 load_weight_base
+int32 load_state
+bool close_check_weight
+bool check_fork_state

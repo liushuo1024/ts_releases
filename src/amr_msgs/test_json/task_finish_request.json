@@ -1,0 +1,7 @@
+{
+    "agvId": "007",
+    "sequence": 1,
+    "taskType": "ForkTaskRequest",
+    "taskSequence": 0,
+    "taskStatus": 1
+}

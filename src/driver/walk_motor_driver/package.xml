@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>walk_motor_driver</name>
+  <version>1.0.0</version>
+  <description>行走电机驱动功能包 - 支持使能、失能、速度、转矩和位置控制</description>
+  <maintainer email="user@example.com">user</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>can_msgs</build_depend>
+  <build_depend>common</build_depend>
+  <build_depend>message_generation</build_depend>
+
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>can_msgs</exec_depend>
+  <exec_depend>common</exec_depend>
+  <exec_depend>message_runtime</exec_depend>
+
+  <export>
+  </export>
+</package>

@@ -1,0 +1,5 @@
+uint8 clamp_left_state
+uint8 clamp_right_state
+uint8 clamp_detect_state
+uint8 clamp_limit_left_state
+uint8 clamp_limit_right_state

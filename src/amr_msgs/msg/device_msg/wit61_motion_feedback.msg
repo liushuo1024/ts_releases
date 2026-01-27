@@ -1,0 +1,10 @@
+# 时间戳
+uint32 timestamp
+# 数据
+float32 accelerate_x
+float32 angle_x
+float32 omega_z
+float32 omega_x
+float32 angle_z
+# 错误码
+uint16 error_code

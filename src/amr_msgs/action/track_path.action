@@ -1,0 +1,48 @@
+# Define the goal
+string order_id #任务工单号
+string task_id  #任务序列
+uint32 navi_type # 0:none, 1:激光,二维码, 2:磁条
+uint32 motion_type # 0:none, 1:start_point, 2:直线, 3:b样条曲线, 4:圆弧, 5:叉车、堆高车插货, 11:行走充电, 12:向上整定, 13:向下整定, , 20:分区切换，路经调整,31.横向移动
+uint32 next_path_type # 0:none, 1:点, 2:线, 3:b样条曲线, 4:圆弧   用来变曲率--> 目前不需要
+float64 max_speed # 不需要
+float64 target_speed  # -->  限速值
+uint32 end_id # 磁导航 rfid 需要
+float32 end_x 
+float32 end_y
+float32 end_yaw
+float32 adjust_speed #速度调整
+float32 adjust_speed_pose_x
+float32 adjust_speed_pose_y
+float32 adjust_speed_pose_yaw
+float32 c1_x        # b样条控制点
+float32 c1_y
+float32 c2_x
+float32 c2_y
+float32 start_pose_x
+float32 start_pose_y
+float32 start_pose_yaw
+float32 high_precision_pose_x
+float32 high_precision_pose_y
+float32 high_precision_pose_yaw
+
+
+# 直线 曲线 末端切换
+uint32  next_move_type 
+uint32  next_end_id # 磁导航 rfid 需要
+float32 next_end_x 
+float32 next_end_y
+float32 next_end_yaw
+float32 next_c1_x
+float32 next_c1_y
+float32 next_c2_x
+float32 next_c2_y
+
+---
+# Define the result
+uint32 is_finish   # 0:未完成 1：正常完成，无跳转  2:跳至任务动作点 3:跳至任务终点  用作特殊移动任务完成状态使用
+---
+# Define a feedback message
+# error == 1 : have problem
+bool error
+uint32 motion_type # --> 沒有利用, 不需要
+# 判断动作是否准备就绪

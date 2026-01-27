@@ -1,0 +1,9 @@
+# 时间戳
+uint32 time_stamp
+# 林德KOB驱动数据
+float32 actual_driver_velocity
+float32 actual_steering_angle
+uint8 driver_mode
+uint8 battery
+# 错误码
+uint16 error_code

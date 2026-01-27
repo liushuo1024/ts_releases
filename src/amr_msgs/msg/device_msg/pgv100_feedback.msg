@@ -1,0 +1,12 @@
+# 时间戳
+uint32 time_stamp
+# 二维码视觉传感器设备数据
+float64 x_deviation
+float64 y_deviation
+float64 angle
+uint32 tag_number
+uint8 color
+uint8 direction
+uint16 warningcode
+# 错误码
+uint16 error_code

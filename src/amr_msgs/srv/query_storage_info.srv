@@ -1,0 +1,3 @@
+string order_id  #任务工单号
+string task_id   #任务id
+int32 storage_area_id  #查询库区id

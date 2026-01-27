@@ -1,0 +1,51 @@
+use_map_topic: true
+first_map_only: false
+odom_model_type: diff-corrected 
+gui_publish_rate: 10.0
+save_pose_rate: 0.5
+laser_max_beams: 600
+laser_min_range: 1.0
+laser_max_range: 20.0 #indoor:10 outdoor: 30
+min_particles: 400
+max_particles: 700
+kld_err: 0.01
+kld_z: 0.99
+odom_alpha1: 0.05
+odom_alpha2: 0.05
+odom_alpha3: 0.05
+odom_alpha4: 0.05
+laser_z_hit: 0.95
+laser_z_short: 0.1
+laser_z_max: 0.05
+laser_z_rand: 0.05 
+laser_sigma_hit: 0.1
+laser_lambda_short: 0.1
+laser_model_type: likelihood_field
+laser_likelihood_max_dist: 3
+
+update_min_d: 0.02
+update_max_d: 0.1
+update_min_a: 0.03
+update_max_a: 0.157
+
+odom_frame_id: odom
+base_frame_id: base_link
+resample_interval: 1
+transform_tolerance: 0.5
+recovery_alpha_slow: 0.0
+recovery_alpha_fast: 0.0
+
+
+# initial_pose_x: 11.70564474
+# initial_pose_y: 23.59628657
+# initial_pose_a: 0.0
+
+initial_pose_x: 3.796
+initial_pose_y: 26.977
+initial_pose_a: 1.573
+
+
+# initial_pose_x: 9.76
+# initial_pose_y: 23.2
+# initial_pose_a: 0.0
+no_laser_time_thresh: 30.0

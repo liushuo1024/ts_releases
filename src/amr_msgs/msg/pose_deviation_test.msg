@@ -1,0 +1,7 @@
+float32 pose_x
+float32 pose_y
+float32 pose_theta
+float32 delta_y
+float32 delta_theta
+float32 delta_y_average
+float32 delta_theta_average

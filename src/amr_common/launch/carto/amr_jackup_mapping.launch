@@ -1,0 +1,24 @@
+<!--
+  Copyright (c) 2019 amr Inc. All rights reserved. 
+-->
+
+<launch>
+<!-- agv-false,computer true -->
+  <param name="/use_sim_time" value="true" />
+
+  <node name="cartographer_node" pkg="cartographer_ros" type="cartographer_node" args="
+          -configuration_directory $(find amr_common)/config
+          -configuration_basename amr_jackup_mapping.lua
+          -save_state_filename $(find amr_common)/slam_map/jackup_test.pbstream
+          -start_trajectory_with_default_topics true" output="screen">
+  </node>
+
+  <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros" type="cartographer_occupancy_grid_node" args="-resolution 0.05" />
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find amr_common)/config/amr_jackup_mapping.rviz" />
+
+  <!-- <node pkg="tf" type="static_transform_publisher" name="baselink_scan_1_broadcaster" args="0.377964 0.336400 0 0.812037 0 0 base_link laser1 35" />
+  <node pkg="tf" type="static_transform_publisher" name="baselink_scan_2_broadcaster" args="-0.375487 -0.334317 0 -2.400146 0 0 base_link laser2 35" /> -->
+  <node pkg="tf" type="static_transform_publisher" name="baselink_scan_1_broadcaster" args="0.380669 0.333679 0 0.821071 0 0 base_link laser1 35" />
+  <node pkg="tf" type="static_transform_publisher" name="baselink_scan_2_broadcaster" args="-0.381981 -0.339011 0 -2.392134 0 0 base_link laser2 35" />
+</launch>

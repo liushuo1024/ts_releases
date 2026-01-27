@@ -1,0 +1,12 @@
+# 时间戳
+uint32 time_stamp
+# 电机当前电流
+int32 current
+# 电机当前转速
+int32 speed
+# 电机当前位置
+int32 position
+# 电机总体状态字
+uint16 status_code
+# 错误码
+uint16 error_code

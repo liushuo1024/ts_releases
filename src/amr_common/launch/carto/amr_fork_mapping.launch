@@ -1,0 +1,25 @@
+<!--
+  Copyright (c) 2019 amr Inc. All rights reserved. 
+-->
+
+<launch>
+  <param name="/use_sim_time" value="true" />
+
+  <!-- Laser Sensors Node -->
+  <!-- <include file="$(find amr_common)/launch/sensor/amr_sensor.launch"/> -->
+  <include file="$(find amr_calibration)/launch/amr_calibration.launch"/>
+
+  <node name="cartographer_node" pkg="cartographer_ros" type="cartographer_node" args="
+          -configuration_directory $(find amr_common)/config
+          -configuration_basename amr_fork_mapping.lua
+          -save_state_filename $(find amr_common)/slam_map/fork_test.pbstream
+          -start_trajectory_with_default_topics true" output="screen">
+  </node>
+
+  <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros" type="cartographer_occupancy_grid_node" args="-resolution 0.05" />
+
+  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find cartographer_ros)/configuration_files/amr_mapping.rviz" /> -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find amr_common)/config/amr_fork_mapping.rviz" />
+ 
+  <node pkg="tf" type="static_transform_publisher" name="baselink_scan_1_broadcaster" args="0.0. 0. 0. 0. 0. 0. base_link laser 35" /> 
+</launch>

@@ -1,0 +1,7 @@
+<!--
+  Copyright (c) 2019 amr Inc. All rights reserved. 
+-->
+
+<launch>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find amr_common)/config/amr_fork_localizer.rviz" />
+</launch>

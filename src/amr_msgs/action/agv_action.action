@@ -1,0 +1,22 @@
+# Define the goal
+string order_id #任务工单号
+string task_id  #任务序列
+uint32 action_type
+float64 action_value
+---
+# Define the result
+bool is_finish
+---
+# Define a feedback message
+uint32 percent
+
+####         Forklift action  
+#   REST = 0,              //无动作
+#   LOW_POWER_MODE = 1,
+#   PALLET_FORK_UP = 2,    // 托盘车抬货  (operation_value 默认填0)
+#   PALLET_FORK_DOWN = 3,  // 托盘车放货  (operation_value 默认填0)
+#//HEAP_FORK_MOVE = 4,    // 堆高车叉腿移动  (operation_value 填 控制高度) // 暂时
+#   BRAKE = 5,             // 电机报闸  (operation_value 填0(关), 1(开))
+#   BEEP = 6,              // 喇叭  (operation_value 填0(关), 1(开))
+#   ForkliftBodyCotrollerReset  = 7,     // 叉车本体控制器复位(例如：柯蒂斯复位)继电器打开  (operation_value 填0(关), 1(开))
+#   CHARGE = 8             // 自动充电 (operation_value 填0(关), 1(开))

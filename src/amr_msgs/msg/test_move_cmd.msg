@@ -1,0 +1,2 @@
+float64 test_cmd_velcity
+float64 test_cmd_omega

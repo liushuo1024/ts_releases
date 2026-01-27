@@ -1,0 +1,6 @@
+<launch>
+
+  <arg name="sensor" default="hikvs" doc="sensor type [ppf_ref, ppf_slam, dppf, hikvs, sick, uam]"/>
+  <include file="$(find amr_common)/launch/sensor/$(arg sensor).launch"/>
+
+</launch>

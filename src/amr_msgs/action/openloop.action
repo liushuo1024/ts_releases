@@ -1,0 +1,15 @@
+# Define the goal
+string order_id #任务工单号
+string task_id  #任务序列
+uint32 navi_type
+# 0 - openloop
+float32 velocity
+float32 omega
+float32 odom
+---
+# Define the result
+bool is_finish
+---
+# Define a feedback message
+uint32 percent
+#  0 - 100

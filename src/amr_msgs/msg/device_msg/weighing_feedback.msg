@@ -1,0 +1,4 @@
+uint32 time_stamp
+float64 weigh
+uint32 weigh_status
+uint32 error_code

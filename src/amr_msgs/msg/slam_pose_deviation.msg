@@ -1,0 +1,3 @@
+bool pose_vaild
+float32 translation_deviation
+float32 angle_deviation

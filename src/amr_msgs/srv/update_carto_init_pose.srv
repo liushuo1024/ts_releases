@@ -1,0 +1,6 @@
+int32 map_type
+int32 map_id
+int32 section_id
+float64 x
+float64 y
+float64 yaw

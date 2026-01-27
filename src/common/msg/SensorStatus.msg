@@ -1,0 +1,1 @@
+common/SensorStatu[] status

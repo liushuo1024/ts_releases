@@ -1,0 +1,9 @@
+# 时间戳
+uint32 time_stamp
+# 驱动数据
+uint32 voltage
+int32 current
+uint8 soc
+uint8 charge_status
+# 错误码
+uint16 error_code

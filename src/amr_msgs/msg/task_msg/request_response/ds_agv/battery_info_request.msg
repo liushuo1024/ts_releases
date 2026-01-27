@@ -1,0 +1,1 @@
+# 查询小车电池信息包   taskType: batteryInfoRequest

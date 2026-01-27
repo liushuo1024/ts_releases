@@ -1,0 +1,6 @@
+int32 map_id
+int32 section_id
+geometry_msgs/Point32 origin
+float32 resolution
+geometry_msgs/Polygon[] polygon_erase
+geometry_msgs/Polygon[] polygon_strength

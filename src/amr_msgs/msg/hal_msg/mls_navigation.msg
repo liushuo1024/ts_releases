@@ -1,0 +1,2 @@
+bool found_lines
+float32 line_offset
