@@ -8,6 +8,18 @@
 1. 将 config 文件夹放到home目录下;  
 2. 解压ts_robot.zip 后可以直接source ts_robot/setup.bash 后启动launch
 3. src/example 下是example示例源文件
+# 驱动
+## 依赖
+```
+sudo apt-get install libmuparser-dev
+```
+## 启动can  
+开机要使能can，确保can处于可用状态
+```
+roslaunch socketcan_bridge socketcan_bridge.launch
+```
+接收：sent_messages  
+发布：received_messages
 ## demo01 运动仿真
 ### 主要接口
 ### 📡 主要接口
