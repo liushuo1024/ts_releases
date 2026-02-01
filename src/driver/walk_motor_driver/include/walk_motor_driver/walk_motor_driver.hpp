@@ -51,7 +51,7 @@ public:
 private:
   // 初始化电机
   void initMotors();
-
+  void enableAllMotors();
   // 控制指令回调函数
   void enableCallback(const std_msgs::Empty::ConstPtr& msg);
   void disableCallback(const std_msgs::Empty::ConstPtr& msg);

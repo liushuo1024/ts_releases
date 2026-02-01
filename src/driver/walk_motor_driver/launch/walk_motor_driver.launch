@@ -15,10 +15,10 @@
     <!-- 电机配置列表 -->
     <rosparam param="motors">
       [
-        {motor_id: 1, type: "drive", topic_prefix: "lf_drive"},
-        {motor_id: 2, type: "drive", topic_prefix: "rr_drive"},
-        {motor_id: 3, type: "steer", topic_prefix: "lf_steer"},
-        {motor_id: 4, type: "steer", topic_prefix: "rr_steer"}
+        {motor_id: 3, type: "drive", topic_prefix: "lf_drive"},
+        {motor_id: 4, type: "drive", topic_prefix: "rr_drive"},
+        {motor_id: 1, type: "steer", topic_prefix: "lf_steer"},
+        {motor_id: 2, type: "steer", topic_prefix: "rr_steer"}
       ]
     </rosparam>
   </node>

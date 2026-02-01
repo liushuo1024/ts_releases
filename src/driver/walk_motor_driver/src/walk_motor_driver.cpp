@@ -11,6 +11,8 @@ WalkMotorDriver::WalkMotorDriver(ros::NodeHandle nh, ros::NodeHandle private_nh)
   private_nh_.param("max_torque", max_torque_, 10000);
   private_nh_.param("velocity_scale", velocity_scale_, 1000.0);
   private_nh_.param("position_scale", position_scale_, 10000.0 / (2.0 * M_PI));
+  std::cout << "scale1: " << (180.0/M_PI)*(10000/360.0) << std::endl;
+  std::cout << "scale2: " << 10000.0 / (2.0 * M_PI) << std::endl;
 
   // 初始化电机
   initMotors();
@@ -32,22 +34,18 @@ WalkMotorDriver::WalkMotorDriver(ros::NodeHandle nh, ros::NodeHandle private_nh)
   omv_servo_cmd_sub_ = nh_.subscribe("omv_servo_cmd", 10, &WalkMotorDriver::omvServoCmdCallback, this);
 
   // 创建CAN发布者 (发布标准ROS CAN格式话题)
-  can_pub_ = nh_.advertise<can_msgs::Frame>("to_can_bus", 10);
+  can_pub_ = nh_.advertise<can_msgs::Frame>("sent_messages", 10);
 
   // 创建CAN订阅者 (假设收到消息)
-  can_sub_ = nh_.subscribe("from_can_bus", 10, &WalkMotorDriver::canCallback, this);
+  can_sub_ = nh_.subscribe("received_messages", 10, &WalkMotorDriver::canCallback, this);
 
   ROS_INFO("订阅话题:");
   ROS_INFO("  - motors/enable (使能所有电机)");
   ROS_INFO("  - motors/disable (失能所有电机)");
-  ROS_INFO("  - motors/velocity_cmd (速度控制)");
-  ROS_INFO("  - motors/profile_velocity_cmd (速度模式)");
-  ROS_INFO("  - motors/torque_cmd (转矩控制)");
-  ROS_INFO("  - motors/position_cmd (位置控制)");
   ROS_INFO("  - omv_servo_cmd (OMV伺服命令)");
   ROS_INFO("发布话题:");
-  ROS_INFO("  - to_can_bus (CAN发送)");
-  ROS_INFO("  - from_can_bus (CAN接收)");
+  ROS_INFO("  - sent_messages (CAN发送)");
+  ROS_INFO("  - received_messages (CAN接收)");
 }
 
 WalkMotorDriver::~WalkMotorDriver()
@@ -71,16 +69,15 @@ void WalkMotorDriver::initMotors()
       std::string type_str = static_cast<std::string>(motor_config["type"]);
       if (type_str == "drive") {
         motor.type = MOTOR_TYPE_DRIVE;
+        motor.can_address = 0x05800000 + motor.motor_id;
       } else if (type_str == "steer") {
         motor.type = MOTOR_TYPE_STEER;
+        motor.can_address = 0x06000000 + motor.motor_id;
       } else {
         ROS_WARN("未知电机类型: %s, 默认为行走电机", type_str.c_str());
         motor.type = MOTOR_TYPE_DRIVE;
       }
-
       motor.topic_prefix = static_cast<std::string>(motor_config["topic_prefix"]);
-      motor.can_address = 0x05800000 + motor.motor_id;
-
       motors_.push_back(motor);
     }
   } else {
@@ -100,7 +97,27 @@ void WalkMotorDriver::initMotors()
 
 void WalkMotorDriver::run()
 {
+  ROS_INFO("run");
   ros::spin();
+}
+void WalkMotorDriver::enableAllMotors()
+{
+  // 23 0D 20 01 00 00 00 00
+  for (const auto& motor : motors_) {
+    if(motor.type == MOTOR_TYPE_STEER){
+      uint8_t data[8] = {0x23, 0x0D, 0x20, 0x01, 0x00, 0x00, 0x00, 0x00};
+      sendCanFrame(motor.can_address, 0x0D, data, 8);
+      usleep(1000);
+      uint8_t speed[8] = {0x23, 0x03, 0x20, 0x01, 0x00, 0x00, 0x01, 0xF4};
+      sendCanFrame(motor.can_address, 0x0D, data, 8);
+      usleep(1000);
+      ROS_INFO("电机 %d (%s) 使能", motor.motor_id, motor.topic_prefix.c_str());
+    }
+    else if(motor.type == MOTOR_TYPE_DRIVE){
+      ROS_INFO("todo");
+    }
+    
+  }
 }
 void WalkMotorDriver::canCallback(const can_msgs::Frame::ConstPtr& msg)
 {
@@ -113,14 +130,7 @@ void WalkMotorDriver::canCallback(const can_msgs::Frame::ConstPtr& msg)
 void WalkMotorDriver::enableCallback(const std_msgs::Empty::ConstPtr& msg)
 {
   (void)msg;  // 避免未使用警告
-
-  // 使能命令: 23 0D 20 01 00 00 00 00
-  uint8_t data[8] = {0x23, 0x0D, 0x20, 0x01, 0x00, 0x00, 0x00, 0x00};
-
-  for (const auto& motor : motors_) {
-    sendCanFrame(motor.can_address, 0x0D, data, 8);
-    ROS_INFO("电机 %d (%s) 使能", motor.motor_id, motor.topic_prefix.c_str());
-  }
+  enableAllMotors();
 }
 
 void WalkMotorDriver::disableCallback(const std_msgs::Empty::ConstPtr& msg)
@@ -128,11 +138,15 @@ void WalkMotorDriver::disableCallback(const std_msgs::Empty::ConstPtr& msg)
   (void)msg;  // 避免未使用警告
 
   // 失能命令: 23 0C 20 01 00 00 00 00
-  uint8_t data[8] = {0x23, 0x0C, 0x20, 0x01, 0x00, 0x00, 0x00, 0x00};
-
   for (const auto& motor : motors_) {
-    sendCanFrame(motor.can_address, 0x0C, data, 8);
-    ROS_INFO("电机 %d (%s) 失能", motor.motor_id, motor.topic_prefix.c_str());
+    if(motor.type == MOTOR_TYPE_STEER){
+      uint8_t data[8] = {0x23, 0x0C, 0x20, 0x01, 0x00, 0x00, 0x00, 0x00};
+      sendCanFrame(motor.can_address, 0x0C, data, 8);
+      ROS_INFO("电机 %d (%s) 使能", motor.motor_id, motor.topic_prefix.c_str());
+    }
+    else if(motor.type == MOTOR_TYPE_DRIVE){
+      ROS_INFO("todo");
+    }
   }
 }
 
@@ -230,11 +244,11 @@ void WalkMotorDriver::omvServoCmdCallback(const common::omv_servo_cmd::ConstPtr&
   ROS_DEBUG("  sc_main_theta: %.3f rad", msg->sc_main_theta);
   ROS_DEBUG("  sc_left_vel: %.3f m/s", msg->sc_left_vel);
   ROS_DEBUG("  sc_right_vel: %.3f m/s", msg->sc_right_vel);
-  ROS_DEBUG("  sc_left_theta: %.3f rad", msg->sc_left_theta);
-  ROS_DEBUG("  sc_right_theta: %.3f rad", msg->sc_right_theta);
+  ROS_INFO("  sc_left_theta: %.3f rad", msg->sc_left_theta);
+  ROS_INFO("  sc_right_theta: %.3f rad", msg->sc_right_theta);
 
   // 发送行走电机速度控制
-  sendDriveVelocity(msg->sc_left_vel, msg->sc_right_vel);
+  // sendDriveVelocity(msg->sc_left_vel, msg->sc_right_vel);
 
   // 发送转向电机位置控制
   sendSteerPosition(msg->sc_left_theta, msg->sc_right_theta);
@@ -282,6 +296,7 @@ void WalkMotorDriver::sendSteerPosition(double left_theta, double right_theta)
       int32_t pos = (motor.topic_prefix == "lf_steer") ? left_pos : right_pos;
       uint32ToBytes(static_cast<uint32_t>(pos), &data[4]);
       sendCanFrame(motor.can_address, 0x02, data, 8);
+      usleep(1000);
       ROS_DEBUG("转向电机 %d 位置: %.3f rad -> %d", motor.motor_id,
         (motor.topic_prefix == "lf_steer") ? left_theta : right_theta, pos);
     }
@@ -304,29 +319,46 @@ void WalkMotorDriver::sendCanFrame(uint32_t can_address, uint8_t cmd_type, const
   can_pub_.publish(can_msg);
 }
 
+// void WalkMotorDriver::int32ToBytes(int32_t value, uint8_t* bytes)
+// {
+//   // 小端序: 低位在前
+//   bytes[0] = static_cast<uint8_t>(value & 0xFF);
+//   bytes[1] = static_cast<uint8_t>((value >> 8) & 0xFF);
+//   bytes[2] = static_cast<uint8_t>((value >> 16) & 0xFF);
+//   bytes[3] = static_cast<uint8_t>((value >> 24) & 0xFF);
+// }
+
+// void WalkMotorDriver::uint32ToBytes(uint32_t value, uint8_t* bytes)
+// {
+//   // 小端序: 低位在前
+//   bytes[0] = static_cast<uint8_t>(value & 0xFF);
+//   bytes[1] = static_cast<uint8_t>((value >> 8) & 0xFF);
+//   bytes[2] = static_cast<uint8_t>((value >> 16) & 0xFF);
+//   bytes[3] = static_cast<uint8_t>((value >> 24) & 0xFF);
+// }
 void WalkMotorDriver::int32ToBytes(int32_t value, uint8_t* bytes)
 {
-  // 小端序: 低位在前
-  bytes[0] = static_cast<uint8_t>(value & 0xFF);
-  bytes[1] = static_cast<uint8_t>((value >> 8) & 0xFF);
-  bytes[2] = static_cast<uint8_t>((value >> 16) & 0xFF);
-  bytes[3] = static_cast<uint8_t>((value >> 24) & 0xFF);
+  // 大端序: 高位在前
+  bytes[0] = static_cast<uint8_t>((value >> 24) & 0xFF);
+  bytes[1] = static_cast<uint8_t>((value >> 16) & 0xFF);
+  bytes[2] = static_cast<uint8_t>((value >> 8) & 0xFF);
+  bytes[3] = static_cast<uint8_t>(value & 0xFF);
 }
 
 void WalkMotorDriver::uint32ToBytes(uint32_t value, uint8_t* bytes)
 {
-  // 小端序: 低位在前
-  bytes[0] = static_cast<uint8_t>(value & 0xFF);
-  bytes[1] = static_cast<uint8_t>((value >> 8) & 0xFF);
-  bytes[2] = static_cast<uint8_t>((value >> 16) & 0xFF);
-  bytes[3] = static_cast<uint8_t>((value >> 24) & 0xFF);
+  // 大端序: 高位在前
+  bytes[0] = static_cast<uint8_t>((value >> 24) & 0xFF);
+  bytes[1] = static_cast<uint8_t>((value >> 16) & 0xFF);
+  bytes[2] = static_cast<uint8_t>((value >> 8) & 0xFF);
+  bytes[3] = static_cast<uint8_t>(value & 0xFF);
 }
-
 }  // namespace walk_motor_driver
 
 // 主函数
 int main(int argc, char** argv)
 {
+  setlocale(LC_ALL, "zh_CN.UTF-8");
   ros::init(argc, argv, "walk_motor_driver");
 
   ros::NodeHandle nh;
@@ -334,6 +366,6 @@ int main(int argc, char** argv)
 
   walk_motor_driver::WalkMotorDriver driver(nh, private_nh);
   driver.run();
-
+  ROS_INFO("walk_motor_driver 退出");
   return 0;
 }
