@@ -9,7 +9,7 @@ WalkMotorDriver::WalkMotorDriver(ros::NodeHandle nh, ros::NodeHandle private_nh)
   // 获取参数
   private_nh_.param("max_velocity", max_velocity_, 10000);
   private_nh_.param("max_torque", max_torque_, 10000);
-  private_nh_.param("velocity_scale", velocity_scale_, 1000.0);
+  private_nh_.param("velocity_rated_speed", velocity_rated_speed_, 3000.0);
   private_nh_.param("position_scale", position_scale_, 10000.0 / (2.0 * M_PI));
   std::cout << "scale1: " << (180.0/M_PI)*(10000/360.0) << std::endl;
   std::cout << "scale2: " << 10000.0 / (2.0 * M_PI) << std::endl;
@@ -257,16 +257,18 @@ void WalkMotorDriver::omvServoCmdCallback(const common::omv_servo_cmd::ConstPtr&
 void WalkMotorDriver::sendDriveVelocity(double left_vel, double right_vel)
 {
   // 将浮点速度转换为CAN整数 (乘以比例因子)
-  int32_t left_can_vel = static_cast<int32_t>(left_vel * velocity_scale_);
-  int32_t right_can_vel = static_cast<int32_t>(right_vel * velocity_scale_);
+  double left_radio = left_vel/velocity_rated_speed_;
+  double right_radio = right_vel/velocity_rated_speed_;
+  int32_t left_can_vel = static_cast<int32_t>(left_radio * 10000);
+  int32_t right_can_vel = static_cast<int32_t>(right_radio * 10000);
 
   // 限制速度范围
   if (left_can_vel > max_velocity_) left_can_vel = max_velocity_;
   if (left_can_vel < -max_velocity_) left_can_vel = -max_velocity_;
   if (right_can_vel > max_velocity_) right_can_vel = max_velocity_;
   if (right_can_vel < -max_velocity_) right_can_vel = -max_velocity_;
-
-  // 速度控制命令: 23 00 20 01 DATA_H(h) DATA_H(l) DATA_L(h) DATA_L(l)
+  //   使能指令： 23 0D 20 01 00 00 00 00
+  //   速度指令：23 00 20 01 00 00 13 88 （0x1388 = 5000）
   uint8_t data[8] = {0x23, 0x00, 0x20, 0x01, 0x00, 0x00, 0x00, 0x00};
 
   // 对所有行走电机发送速度控制

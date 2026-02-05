@@ -101,8 +101,8 @@ private:
   // 控制参数
   int max_velocity_;              // 最大速度 (+/-10000)
   int max_torque_;                // 最大转矩 (+/-10000)
-  double velocity_scale_;         // 速度转换比例 (m/s -> CAN值)
   double position_scale_;         // 位置转换比例 (rad -> CAN值)
+  double velocity_rated_speed_;
 };
 
 }  // namespace walk_motor_driver
