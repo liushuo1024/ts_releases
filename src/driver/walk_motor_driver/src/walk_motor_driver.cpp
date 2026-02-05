@@ -246,7 +246,7 @@ void WalkMotorDriver::omvServoCmdCallback(const common::omv_servo_cmd::ConstPtr&
   ROS_DEBUG("  sc_right_vel: %.3f m/s", msg->sc_right_vel);
   ROS_INFO("  sc_left_theta: %.3f rad", msg->sc_left_theta);
   ROS_INFO("  sc_right_theta: %.3f rad", msg->sc_right_theta);
-
+  enableAllMotors();
   // 发送行走电机速度控制
   // sendDriveVelocity(msg->sc_left_vel, msg->sc_right_vel);
 

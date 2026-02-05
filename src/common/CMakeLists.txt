@@ -21,8 +21,16 @@ add_message_files(
    omv_servo_cmd.msg
    omv_servo_encoder.msg
    servo_omv_cmd.msg
+   ConstErrorCode.msg
+   safe_lidar_state.msg
 )
-
+add_service_files(
+   FILES
+   EHandle_set.srv
+   EHandle_get.srv
+   bluesea_control.srv
+   bluesea_defencezone.srv
+)
 generate_messages(
   DEPENDENCIES
   std_msgs

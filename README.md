@@ -11,6 +11,7 @@
 # 驱动
 ## 依赖
 ```
+sudo apt-get install ros-noetic-filters
 sudo apt-get install libmuparser-dev
 ```
 ## 启动can  

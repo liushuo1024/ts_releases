@@ -1,0 +1,3 @@
+bool Request
+---
+int32 ErrorCode
