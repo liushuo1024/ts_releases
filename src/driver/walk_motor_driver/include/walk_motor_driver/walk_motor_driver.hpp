@@ -103,6 +103,8 @@ private:
   int max_torque_;                // 最大转矩 (+/-10000)
   double position_scale_;         // 位置转换比例 (rad -> CAN值)
   double velocity_rated_speed_;
+  double steer_rated_speed_;
+  double steer_ratio_;
 };
 
 }  // namespace walk_motor_driver

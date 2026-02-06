@@ -10,6 +10,9 @@ WalkMotorDriver::WalkMotorDriver(ros::NodeHandle nh, ros::NodeHandle private_nh)
   private_nh_.param("max_velocity", max_velocity_, 10000);
   private_nh_.param("max_torque", max_torque_, 10000);
   private_nh_.param("velocity_rated_speed", velocity_rated_speed_, 3000.0);
+  private_nh_.param("steer_rated_speed", steer_rated_speed_, 3000.0);
+  private_nh_.param("steer_ratio", steer_ratio_, 40.0);
+  
   private_nh_.param("position_scale", position_scale_, 10000.0 / (2.0 * M_PI));
   std::cout << "scale1: " << (180.0/M_PI)*(10000/360.0) << std::endl;
   std::cout << "scale2: " << 10000.0 / (2.0 * M_PI) << std::endl;
@@ -283,11 +286,13 @@ void WalkMotorDriver::sendDriveVelocity(double left_vel, double right_vel)
   }
 }
 
-void WalkMotorDriver::sendSteerPosition(double left_theta, double right_theta)
+void WalkMotorDriver::sendSteerPosition(const double left_theta, const double right_theta)
 {
   // 将弧度转换为位置值 (10000/圈 = 10000/(2π) /rad)
-  int32_t left_pos = static_cast<int32_t>(left_theta * position_scale_);
-  int32_t right_pos = static_cast<int32_t>(right_theta * position_scale_);
+  double left_motor_theta = steer_ratio_*left_theta;
+  double right_motor_theta = steer_ratio_*right_theta;
+  int32_t left_pos = static_cast<int32_t>(left_motor_theta * position_scale_);
+  int32_t right_pos = static_cast<int32_t>(right_motor_theta * position_scale_);
 
   // 位置控制命令: 23 02 20 01 DATA_H(h) DATA_H(l) DATA_L(h) DATA_L(l)
   uint8_t data[8] = {0x23, 0x02, 0x20, 0x01, 0x00, 0x00, 0x00, 0x00};
@@ -300,7 +305,7 @@ void WalkMotorDriver::sendSteerPosition(double left_theta, double right_theta)
       sendCanFrame(motor.can_address, 0x02, data, 8);
       usleep(1000);
       ROS_DEBUG("转向电机 %d 位置: %.3f rad -> %d", motor.motor_id,
-        (motor.topic_prefix == "lf_steer") ? left_theta : right_theta, pos);
+        (motor.topic_prefix == "lf_steer") ? left_motor_theta : right_motor_theta, pos);
     }
   }
 }
