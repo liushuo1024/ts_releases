@@ -1,25 +1,11 @@
 <launch>
   <!-- 声明启动参数 -->
-  <arg name="can_channel" default="can0" doc="CAN通道名称"/>
-  <arg name="max_velocity" default="10000" doc="最大速度 (+/-10000)"/>
-  <arg name="max_torque" default="10000" doc="最大转矩 (+/-10000)"/>
+  <arg name="config_file" default="$(find walk_motor_driver)/config/walk_motor_params.yaml"
+       doc="参数配置文件路径"/>
 
   <!-- 行走电机驱动节点 -->
   <node pkg="walk_motor_driver" type="walk_motor_driver_node" name="walk_motor_driver" output="screen">
-    <param name="can_channel" value="$(arg can_channel)"/>
-    <param name="max_velocity" value="$(arg max_velocity)"/>
-    <param name="max_torque" value="$(arg max_torque)"/>
-    <param name="velocity_scale" value="1000.0"/>
-    <param name="position_scale" value="1591.55"/>  <!-- 10000/(2*pi) -->
-
-    <!-- 电机配置列表 -->
-    <rosparam param="motors">
-      [
-        {motor_id: 3, type: "drive", topic_prefix: "lf_drive"},
-        {motor_id: 4, type: "drive", topic_prefix: "rr_drive"},
-        {motor_id: 1, type: "steer", topic_prefix: "lf_steer"},
-        {motor_id: 2, type: "steer", topic_prefix: "rr_steer"}
-      ]
-    </rosparam>
+    <!-- 从YAML文件加载所有参数 -->
+    <rosparam command="load" file="$(arg config_file)"/>
   </node>
 </launch>

@@ -1,0 +1,42 @@
+# 行走电机驱动参数配置文件
+# Walk Motor Driver Parameters Configuration
+
+# CAN通道配置
+can_channel: "can0"
+
+# 速度参数
+max_velocity: 10000
+max_torque: 10000
+velocity_rated_speed: 3000.0
+steer_rated_speed: 3000.0
+
+# 位置参数
+position_scale: 1591.55  # 10000/(2*pi)
+steer_ratio: 40.0
+
+# 电机配置列表
+motors:
+  - motor_id: 3
+    type: "drive"
+    topic_prefix: "lf_drive"
+  
+  - motor_id: 4
+    type: "drive"
+    topic_prefix: "rr_drive"
+  
+  - motor_id: 1
+    type: "steer"
+    topic_prefix: "lf_steer"
+  
+  - motor_id: 2
+    type: "steer"
+    topic_prefix: "rr_steer"
+
+
+left_zero_point: 0.0
+right_zero_point: 0.0
+
+left_driver_neg: false
+right_driver_neg: false
+left_steer_neg: false
+right_steer_neg: false

@@ -7,20 +7,29 @@ WalkMotorDriver::WalkMotorDriver(ros::NodeHandle nh, ros::NodeHandle private_nh)
 : nh_(nh), private_nh_(private_nh)
 {
   // 获取参数
-  private_nh_.param("max_velocity", max_velocity_, 10000);
-  private_nh_.param("max_torque", max_torque_, 10000);
+  private_nh_.param("max_motor_rpm", max_motor_rpm_, 10000);
   private_nh_.param("velocity_rated_speed", velocity_rated_speed_, 3000.0);
   private_nh_.param("steer_rated_speed", steer_rated_speed_, 3000.0);
   private_nh_.param("steer_ratio", steer_ratio_, 40.0);
-  
   private_nh_.param("position_scale", position_scale_, 10000.0 / (2.0 * M_PI));
+
+
+
+
+
   std::cout << "scale1: " << (180.0/M_PI)*(10000/360.0) << std::endl;
   std::cout << "scale2: " << 10000.0 / (2.0 * M_PI) << std::endl;
 
+  private_nh_.param("left_zero_point",left_zero_point_,0.0);
+  private_nh_.param("right_zero_point",right_zero_point_,0.0);
+
+  private_nh_.param("left_driver_neg",left_driver_neg_,false);
+  private_nh_.param("right_driver_neg",right_driver_neg_,false);
+  private_nh_.param("left_steer_neg",left_steer_neg_,false);
+  private_nh_.param("right_steer_neg",right_steer_neg_,false);
+
   // 初始化电机
   initMotors();
-
-  ROS_INFO("行走电机驱动节点启动");
   ROS_INFO("已配置 %d 个电机", (int)motors_.size());
 
   for (const auto& motor : motors_) {
@@ -36,19 +45,25 @@ WalkMotorDriver::WalkMotorDriver(ros::NodeHandle nh, ros::NodeHandle private_nh)
   disable_sub_ = nh_.subscribe("motors/disable", 10, &WalkMotorDriver::disableCallback, this);
   omv_servo_cmd_sub_ = nh_.subscribe("omv_servo_cmd", 10, &WalkMotorDriver::omvServoCmdCallback, this);
 
-  // 创建CAN发布者 (发布标准ROS CAN格式话题)
   can_pub_ = nh_.advertise<can_msgs::Frame>("sent_messages", 10);
 
-  // 创建CAN订阅者 (假设收到消息)
   can_sub_ = nh_.subscribe("received_messages", 10, &WalkMotorDriver::canCallback, this);
 
-  ROS_INFO("订阅话题:");
-  ROS_INFO("  - motors/enable (使能所有电机)");
-  ROS_INFO("  - motors/disable (失能所有电机)");
-  ROS_INFO("  - omv_servo_cmd (OMV伺服命令)");
-  ROS_INFO("发布话题:");
-  ROS_INFO("  - sent_messages (CAN发送)");
-  ROS_INFO("  - received_messages (CAN接收)");
+  // 创建编码器反馈发布者
+  encoder_pub_ = nh_.advertise<common::omv_servo_encoder>("omv_servo_encoder", 10);
+
+  // 初始化编码器数据
+  encoder_data_.left_drive_vel = 0;
+  encoder_data_.right_drive_vel = 0;
+  encoder_data_.left_steer_pos = 0;
+  encoder_data_.right_steer_pos = 0;
+  encoder_data_.left_drive_valid = false;
+  encoder_data_.right_drive_valid = false;
+  encoder_data_.left_steer_valid = false;
+  encoder_data_.right_steer_valid = false;
+
+  // 创建查询定时器 (50ms = 20Hz)
+  query_timer_ = nh_.createTimer(ros::Duration(0.05), &WalkMotorDriver::queryCallback, this);
 }
 
 WalkMotorDriver::~WalkMotorDriver()
@@ -124,21 +139,42 @@ void WalkMotorDriver::enableAllMotors()
 }
 void WalkMotorDriver::canCallback(const can_msgs::Frame::ConstPtr& msg)
 {
-  // 假设收到消息,可以在这里处理返回的数据
-  // 返回数据格式: 60 XX 20 00 00 00 00 00
-  uint8_t cmd_type = msg->data[1];
-  ROS_DEBUG("收到响应: ID=0x%08X, 命令类型=0x%02X", msg->id, cmd_type);
+  // 返回数据格式: 60 XX 21 01 DATA...
+  if (msg->dlc >= 4) {
+    uint8_t cmd_type = msg->data[1];
+    uint8_t sub_cmd = msg->data[2];
+    uint8_t sub_param = msg->data[3];
+
+    ROS_DEBUG("收到响应: ID=0x%08X, 命令类型=0x%02X", msg->id, cmd_type);
+
+    // 行走电机转速查询响应: 60 03 21 01 DATA_H(h) DATA_H(l) DATA_L(h) DATA_L(l)
+    if (cmd_type == 0x03 && sub_cmd == 0x21 && sub_param == 0x01 && msg->dlc >= 8) {
+      int32_t velocity = 0;
+      velocity = (static_cast<int32_t>(msg->data[4]) << 24) |
+                  (static_cast<int32_t>(msg->data[5]) << 16) |
+                  (static_cast<int32_t>(msg->data[6]) << 8) |
+                  static_cast<int32_t>(msg->data[7]);
+      processVelocityResponse(msg->id, velocity);
+    }
+
+    // 转向电机位置查询响应: 60 04 21 01 00 00 DATA-H DATA-L
+    if (cmd_type == 0x04 && sub_cmd == 0x21 && sub_param == 0x02 && msg->dlc >= 8) {
+      uint16_t position = (static_cast<uint16_t>(msg->data[6]) << 8) |
+                          static_cast<uint16_t>(msg->data[7]);
+      processPositionResponse(msg->id, position);
+    }
+  }
 }
 
 void WalkMotorDriver::enableCallback(const std_msgs::Empty::ConstPtr& msg)
 {
-  (void)msg;  // 避免未使用警告
+  (void)msg;
   enableAllMotors();
 }
 
 void WalkMotorDriver::disableCallback(const std_msgs::Empty::ConstPtr& msg)
 {
-  (void)msg;  // 避免未使用警告
+  (void)msg;
 
   // 失能命令: 23 0C 20 01 00 00 00 00
   for (const auto& motor : motors_) {
@@ -151,84 +187,6 @@ void WalkMotorDriver::disableCallback(const std_msgs::Empty::ConstPtr& msg)
       ROS_INFO("todo");
     }
   }
-}
-
-void WalkMotorDriver::velocityCallback(const std_msgs::Int32::ConstPtr& msg)
-{
-  // 假设消息格式为：[左前行走, 右后行走, 左前转向, 右后转向]
-  // 实际应用中需要根据具体消息格式调整
-
-  // 这里只示例行走电机的速度控制
-  if (motors_.size() >= 2) {
-    int32_t left_vel = msg->data;
-    int32_t right_vel = msg->data;  // 简化示例，实际应从消息中分别获取
-
-    // 限制速度范围
-    if (left_vel > max_velocity_) left_vel = max_velocity_;
-    if (left_vel < -max_velocity_) left_vel = -max_velocity_;
-    if (right_vel > max_velocity_) right_vel = max_velocity_;
-    if (right_vel < -max_velocity_) right_vel = -max_velocity_;
-
-    // 发送速度控制命令
-    uint8_t data[8] = {0x23, 0x00, 0x20, 0x01, 0x00, 0x00, 0x00, 0x00};
-
-    // 左前行走电机
-    int32ToBytes(left_vel, &data[4]);
-    sendCanFrame(motors_[0].can_address, 0x00, data, 8);
-
-    // 右后行走电机
-    int32ToBytes(right_vel, &data[4]);
-    sendCanFrame(motors_[1].can_address, 0x00, data, 8);
-
-    ROS_DEBUG("速度控制: 左轮=%d, 右轮=%d", left_vel, right_vel);
-  }
-}
-
-void WalkMotorDriver::profileVelocityCallback(const std_msgs::Int32::ConstPtr& msg)
-{
-  // 速度模式命令: 23 03 20 01 DATA_H(h) DATA_H(l) DATA_L(h) DATA_L(l)
-  // 用于设置位置控制时的运行速度
-  int32_t velocity = msg->data;
-
-  // 限制速度范围
-  if (velocity > max_velocity_) {
-    velocity = max_velocity_;
-  } else if (velocity < -max_velocity_) {
-    velocity = -max_velocity_;
-  }
-
-  uint8_t data[8] = {0x23, 0x03, 0x20, 0x01, 0x00, 0x00, 0x00, 0x00};
-  int32ToBytes(velocity, &data[4]);
-
-  // 对所有电机发送速度模式命令
-  for (const auto& motor : motors_) {
-    sendCanFrame(motor.can_address, 0x03, data, 8);
-  }
-
-  ROS_INFO("设置速度模式: %d", velocity);
-}
-
-void WalkMotorDriver::torqueCallback(const std_msgs::Int32::ConstPtr& msg)
-{
-  int32_t torque = msg->data;
-
-  // 限制转矩范围
-  if (torque > max_torque_) {
-    torque = max_torque_;
-  } else if (torque < -max_torque_) {
-    torque = -max_torque_;
-  }
-
-  // 转矩控制命令: 23 01 20 01 DATA_H(h) DATA_H(l) DATA_L(h) DATA_L(l)
-  uint8_t data[8] = {0x23, 0x01, 0x20, 0x01, 0x00, 0x00, 0x00, 0x00};
-  int32ToBytes(torque, &data[4]);
-
-  // 对所有电机发送转矩控制命令
-  for (const auto& motor : motors_) {
-    sendCanFrame(motor.can_address, 0x01, data, 8);
-  }
-
-  ROS_DEBUG("转矩控制: %d", torque);
 }
 
 void WalkMotorDriver::omvServoCmdCallback(const common::omv_servo_cmd::ConstPtr& msg)
@@ -245,19 +203,29 @@ void WalkMotorDriver::omvServoCmdCallback(const common::omv_servo_cmd::ConstPtr&
   ROS_DEBUG("收到OMV伺服命令:");
   ROS_DEBUG("  sc_vel: %.3f m/s", msg->sc_vel);
   ROS_DEBUG("  sc_main_theta: %.3f rad", msg->sc_main_theta);
-  ROS_DEBUG("  sc_left_vel: %.3f m/s", msg->sc_left_vel);
-  ROS_DEBUG("  sc_right_vel: %.3f m/s", msg->sc_right_vel);
+  ROS_INFO("  sc_left_vel: %.3f m/s", msg->sc_left_vel);
+  ROS_INFO("  sc_right_vel: %.3f m/s", msg->sc_right_vel);
   ROS_INFO("  sc_left_theta: %.3f rad", msg->sc_left_theta);
   ROS_INFO("  sc_right_theta: %.3f rad", msg->sc_right_theta);
-  enableAllMotors();
-  // 发送行走电机速度控制
-  // sendDriveVelocity(msg->sc_left_vel, msg->sc_right_vel);
 
-  // 发送转向电机位置控制
-  sendSteerPosition(msg->sc_left_theta, msg->sc_right_theta);
+  double left_vel = msg->sc_left_vel;
+  double right_vel = msg->sc_right_vel;
+  double left_theta = msg->sc_left_theta;
+  double right_theta = msg->sc_right_theta;
+  left_theta += left_zero_point_;
+  right_theta += right_zero_point_;
+  
+  left_vel = left_driver_neg_?-left_vel:left_vel;
+  right_vel = right_driver_neg_?-right_vel:right_vel;
+  left_theta = left_steer_neg_?-left_theta:left_theta;
+  right_theta = right_steer_neg_?-right_theta:right_theta;
+
+  enableAllMotors();
+  sendDriveVelocity(left_vel, right_vel);
+  sendSteerPosition(left_theta, right_theta);
 }
 
-void WalkMotorDriver::sendDriveVelocity(double left_vel, double right_vel)
+void WalkMotorDriver::sendDriveVelocity(const double left_vel,const double right_vel)
 {
   // 将浮点速度转换为CAN整数 (乘以比例因子)
   double left_radio = left_vel/velocity_rated_speed_;
@@ -266,10 +234,10 @@ void WalkMotorDriver::sendDriveVelocity(double left_vel, double right_vel)
   int32_t right_can_vel = static_cast<int32_t>(right_radio * 10000);
 
   // 限制速度范围
-  if (left_can_vel > max_velocity_) left_can_vel = max_velocity_;
-  if (left_can_vel < -max_velocity_) left_can_vel = -max_velocity_;
-  if (right_can_vel > max_velocity_) right_can_vel = max_velocity_;
-  if (right_can_vel < -max_velocity_) right_can_vel = -max_velocity_;
+  if (left_can_vel > max_motor_rpm_) left_can_vel = max_motor_rpm_;
+  if (left_can_vel < -max_motor_rpm_) left_can_vel = -max_motor_rpm_;
+  if (right_can_vel > max_motor_rpm_) right_can_vel = max_motor_rpm_;
+  if (right_can_vel < -max_motor_rpm_) right_can_vel = -max_motor_rpm_;
   //   使能指令： 23 0D 20 01 00 00 00 00
   //   速度指令：23 00 20 01 00 00 13 88 （0x1388 = 5000）
   uint8_t data[8] = {0x23, 0x00, 0x20, 0x01, 0x00, 0x00, 0x00, 0x00};
@@ -314,7 +282,6 @@ void WalkMotorDriver::sendCanFrame(uint32_t can_address, uint8_t cmd_type, const
 {
   can_msgs::Frame can_msg;
 
-  // 标准ROS CAN帧格式
   can_msg.id = can_address;
   can_msg.is_extended = true;  // 扩展帧
   can_msg.dlc = dlc;
@@ -326,23 +293,6 @@ void WalkMotorDriver::sendCanFrame(uint32_t can_address, uint8_t cmd_type, const
   can_pub_.publish(can_msg);
 }
 
-// void WalkMotorDriver::int32ToBytes(int32_t value, uint8_t* bytes)
-// {
-//   // 小端序: 低位在前
-//   bytes[0] = static_cast<uint8_t>(value & 0xFF);
-//   bytes[1] = static_cast<uint8_t>((value >> 8) & 0xFF);
-//   bytes[2] = static_cast<uint8_t>((value >> 16) & 0xFF);
-//   bytes[3] = static_cast<uint8_t>((value >> 24) & 0xFF);
-// }
-
-// void WalkMotorDriver::uint32ToBytes(uint32_t value, uint8_t* bytes)
-// {
-//   // 小端序: 低位在前
-//   bytes[0] = static_cast<uint8_t>(value & 0xFF);
-//   bytes[1] = static_cast<uint8_t>((value >> 8) & 0xFF);
-//   bytes[2] = static_cast<uint8_t>((value >> 16) & 0xFF);
-//   bytes[3] = static_cast<uint8_t>((value >> 24) & 0xFF);
-// }
 void WalkMotorDriver::int32ToBytes(int32_t value, uint8_t* bytes)
 {
   // 大端序: 高位在前
@@ -360,7 +310,110 @@ void WalkMotorDriver::uint32ToBytes(uint32_t value, uint8_t* bytes)
   bytes[2] = static_cast<uint8_t>((value >> 8) & 0xFF);
   bytes[3] = static_cast<uint8_t>(value & 0xFF);
 }
-}  // namespace walk_motor_driver
+
+void WalkMotorDriver::queryCallback(const ros::TimerEvent& event)
+{
+  (void)event;  // 避免未使用警告
+  // 定时发送查询命令
+  queryMotorVelocity();
+  querySteerPosition();
+}
+
+void WalkMotorDriver::queryMotorVelocity()
+{
+  // 电机转速查询: 40 03 21 01 00 00 00 00
+  uint8_t data[8] = {0x40, 0x03, 0x21, 0x01, 0x00, 0x00, 0x00, 0x00};
+
+  for (const auto& motor : motors_) {
+    if (motor.type == MOTOR_TYPE_DRIVE) {
+      sendCanFrame(motor.can_address, 0x03, data, 8);
+    }
+  }
+}
+
+void WalkMotorDriver::querySteerPosition()
+{
+  // 转子机械位置查询: 40 04 21 01 00 00 00 00
+  uint8_t data[8] = {0x40, 0x04, 0x21, 0x01, 0x00, 0x00, 0x00, 0x00};
+
+  for (const auto& motor : motors_) {
+    if (motor.type == MOTOR_TYPE_STEER) {
+      sendCanFrame(motor.can_address, 0x04, data, 8);
+    }
+  }
+}
+
+void WalkMotorDriver::processVelocityResponse(uint32_t can_address, int32_t velocity)
+{
+  // 根据CAN地址找到对应的电机
+  for (const auto& motor : motors_) {
+    if (motor.can_address == can_address && motor.type == MOTOR_TYPE_DRIVE) {
+      if (motor.topic_prefix == "lf_drive") {
+        encoder_data_.left_drive_vel = velocity;
+        encoder_data_.left_drive_valid = true;
+        ROS_DEBUG("左行走电机转速: %d RPM", velocity);
+      } else if (motor.topic_prefix == "rr_drive") {
+        encoder_data_.right_drive_vel = velocity;
+        encoder_data_.right_drive_valid = true;
+        ROS_DEBUG("右行走电机转速: %d RPM", velocity);
+      }
+      break;
+    }
+  }
+  publishEncoderFeedback();
+}
+
+void WalkMotorDriver::processPositionResponse(uint32_t can_address, uint16_t position)
+{
+  // 根据CAN地址找到对应的电机
+  for (const auto& motor : motors_) {
+    if (motor.can_address == can_address && motor.type == MOTOR_TYPE_STEER) {
+      if (motor.topic_prefix == "lf_steer") {
+        encoder_data_.left_steer_pos = position;
+        encoder_data_.left_steer_valid = true;
+        ROS_DEBUG("左转向电机位置: %u", position);
+      } else if (motor.topic_prefix == "rr_steer") {
+        encoder_data_.right_steer_pos = position;
+        encoder_data_.right_steer_valid = true;
+        ROS_DEBUG("右转向电机位置: %u", position);
+      }
+      break;
+    }
+  }
+  publishEncoderFeedback();
+}
+
+void WalkMotorDriver::publishEncoderFeedback()
+{
+  common::omv_servo_encoder encoder_msg;
+  encoder_msg.header.stamp = ros::Time::now();
+
+  // 将位置值转换为弧度 (0-9999 对应 0-2π)
+  double left_theta = encoder_data_.left_steer_valid ?
+                      static_cast<double>(encoder_data_.left_steer_pos) /position_scale_/steer_ratio_ : 0.0;
+  double right_theta = encoder_data_.right_steer_valid ?
+                       static_cast<double>(encoder_data_.right_steer_pos) /position_scale_/steer_ratio_ : 0.0;
+
+  // 将RPM转换为线速度 (m/s)
+  double left_vel = encoder_data_.left_drive_valid ?
+                   encoder_data_.left_drive_vel : 0.0;
+  double right_vel = encoder_data_.right_drive_valid ?
+                    encoder_data_.right_drive_vel : 0.0;
+
+  // encoder_msg.se_vel = (left_vel + right_vel) / 2.0;  // 平均速度
+  // encoder_msg.se_main_theta = (left_theta + right_theta) / 2.0;  // 平均偏转角
+  encoder_msg.se_left_theta = left_theta;
+  encoder_msg.se_right_theta = right_theta;
+  encoder_msg.se_left_vel = left_vel;
+  encoder_msg.se_right_vel = right_vel;
+
+  encoder_pub_.publish(encoder_msg);
+
+  ROS_DEBUG("发布编码器反馈: vel=%.3f, left_theta=%.3f, right_theta=%.3f",
+            encoder_msg.se_vel, encoder_msg.se_left_theta, encoder_msg.se_right_theta);
+}
+
+}
 
 // 主函数
 int main(int argc, char** argv)
@@ -376,3 +429,4 @@ int main(int argc, char** argv)
   ROS_INFO("walk_motor_driver 退出");
   return 0;
 }
+
