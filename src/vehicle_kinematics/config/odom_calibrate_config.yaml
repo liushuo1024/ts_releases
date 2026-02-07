@@ -1,0 +1,6 @@
+wheel_track_theory_const: 0.2
+radius_virtual_left_wheel_const: 0.1
+radius_virtual_right_wheel_const: 0.1
+wheel_track: 0.2
+radius_virtual_left_wheel: 0.1
+radius_virtual_right_wheel: 0.1

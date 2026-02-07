@@ -1,0 +1,7 @@
+<?xml version='1.0'?>
+
+<launch>
+  <node pkg="sim_control" name="key_ctrl_omv" type="key_ctrl_omv.py">
+  </node>
+
+</launch>

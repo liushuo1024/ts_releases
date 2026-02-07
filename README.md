@@ -21,6 +21,10 @@ roslaunch socketcan_bridge socketcan_bridge.launch
 ```
 接收：sent_messages  
 发布：received_messages
+## 启动底盘
+```
+roslaunch walk_motor_driver walk_motor_driver.launch
+```
 ## demo01 运动仿真
 ### 主要接口
 ### 📡 主要接口

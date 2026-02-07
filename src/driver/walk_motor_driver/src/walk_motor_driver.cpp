@@ -63,7 +63,7 @@ WalkMotorDriver::WalkMotorDriver(ros::NodeHandle nh, ros::NodeHandle private_nh)
   encoder_data_.right_steer_valid = false;
 
   // 创建查询定时器 (50ms = 20Hz)
-  query_timer_ = nh_.createTimer(ros::Duration(0.05), &WalkMotorDriver::queryCallback, this);
+  // query_timer_ = nh_.createTimer(ros::Duration(0.1), &WalkMotorDriver::queryCallback, this);
 }
 
 WalkMotorDriver::~WalkMotorDriver()
@@ -87,7 +87,7 @@ void WalkMotorDriver::initMotors()
       std::string type_str = static_cast<std::string>(motor_config["type"]);
       if (type_str == "drive") {
         motor.type = MOTOR_TYPE_DRIVE;
-        motor.can_address = 0x05800000 + motor.motor_id;
+        motor.can_address = 0x06000000 + motor.motor_id;
       } else if (type_str == "steer") {
         motor.type = MOTOR_TYPE_STEER;
         motor.can_address = 0x06000000 + motor.motor_id;
@@ -98,18 +98,6 @@ void WalkMotorDriver::initMotors()
       motor.topic_prefix = static_cast<std::string>(motor_config["topic_prefix"]);
       motors_.push_back(motor);
     }
-  } else {
-    // 默认配置：对角舵轮
-    ROS_WARN("未找到电机配置，使用默认配置");
-
-    // 左前行走电机
-    motors_.push_back({1, MOTOR_TYPE_DRIVE, 0x05800001, "lf_drive"});
-    // 右后行走电机
-    motors_.push_back({2, MOTOR_TYPE_DRIVE, 0x05800002, "rr_drive"});
-    // 左前转向舵轮
-    motors_.push_back({3, MOTOR_TYPE_STEER, 0x05800003, "lf_steer"});
-    // 右后转向舵轮
-    motors_.push_back({4, MOTOR_TYPE_STEER, 0x05800004, "rr_steer"});
   }
 }
 
@@ -120,6 +108,10 @@ void WalkMotorDriver::run()
 }
 void WalkMotorDriver::enableAllMotors()
 {
+  if(ros::Time::now().toSec() - last_send_enable_time_ < 0.5){
+    ROS_INFO("enableAllMotors: 上一次发送使能命令未超过0.5秒，跳过");
+    return;
+  }
   // 23 0D 20 01 00 00 00 00
   for (const auto& motor : motors_) {
     if(motor.type == MOTOR_TYPE_STEER){
@@ -132,10 +124,14 @@ void WalkMotorDriver::enableAllMotors()
       ROS_INFO("电机 %d (%s) 使能", motor.motor_id, motor.topic_prefix.c_str());
     }
     else if(motor.type == MOTOR_TYPE_DRIVE){
-      ROS_INFO("todo");
+      uint8_t data[8] = {0x23, 0x0D, 0x20, 0x01, 0x00, 0x00, 0x00, 0x00};
+      sendCanFrame(motor.can_address, 0x0D, data, 8);
+      usleep(1000);
+      ROS_INFO("电机 %d (%s) 使能", motor.motor_id, motor.topic_prefix.c_str());
     }
     
   }
+  last_send_enable_time_ = ros::Time::now().toSec();
 }
 void WalkMotorDriver::canCallback(const can_msgs::Frame::ConstPtr& msg)
 {
@@ -230,6 +226,8 @@ void WalkMotorDriver::sendDriveVelocity(const double left_vel,const double right
   // 将浮点速度转换为CAN整数 (乘以比例因子)
   double left_radio = left_vel/velocity_rated_speed_;
   double right_radio = right_vel/velocity_rated_speed_;
+  std::cout << "left_radio: " << left_radio << std::endl;
+  std::cout << "right_radio: " << right_radio << std::endl;
   int32_t left_can_vel = static_cast<int32_t>(left_radio * 10000);
   int32_t right_can_vel = static_cast<int32_t>(right_radio * 10000);
 
@@ -248,7 +246,7 @@ void WalkMotorDriver::sendDriveVelocity(const double left_vel,const double right
       int32_t vel = (motor.topic_prefix == "lf_drive") ? left_can_vel : right_can_vel;
       int32ToBytes(vel, &data[4]);
       sendCanFrame(motor.can_address, 0x00, data, 8);
-      ROS_DEBUG("行走电机 %d 速度: %.3f m/s -> %d", motor.motor_id,
+      ROS_DEBUG("行走电机 %d 速度: %.3f rpm -> %d", motor.motor_id,
         (motor.topic_prefix == "lf_drive") ? left_vel : right_vel, vel);
     }
   }
@@ -259,8 +257,14 @@ void WalkMotorDriver::sendSteerPosition(const double left_theta, const double ri
   // 将弧度转换为位置值 (10000/圈 = 10000/(2π) /rad)
   double left_motor_theta = steer_ratio_*left_theta;
   double right_motor_theta = steer_ratio_*right_theta;
-  int32_t left_pos = static_cast<int32_t>(left_motor_theta * position_scale_);
-  int32_t right_pos = static_cast<int32_t>(right_motor_theta * position_scale_);
+  // left_motor_theta = left_motor_theta / M_PI * 180;
+  // right_motor_theta = right_motor_theta / M_PI * 180;
+  std::cout << "left_motor_theta1: " << left_motor_theta << std::endl;
+  std::cout << "right_motor_theta1: " << right_motor_theta << std::endl;
+  left_motor_theta = left_motor_theta * (100000.0/360.0);
+  right_motor_theta = right_motor_theta * (100000.0/360.0);
+  int32_t left_pos = static_cast<int32_t>(left_motor_theta);
+  int32_t right_pos = static_cast<int32_t>(right_motor_theta);
 
   // 位置控制命令: 23 02 20 01 DATA_H(h) DATA_H(l) DATA_L(h) DATA_L(l)
   uint8_t data[8] = {0x23, 0x02, 0x20, 0x01, 0x00, 0x00, 0x00, 0x00};

@@ -1,0 +1,33 @@
+<launch>
+
+    <arg name="arg_delay_time"  default="4.0" />
+    <arg name="arg_max_vel"  default="0.5" />
+    <arg name="arg_movetime"  default="60.0" />
+    <arg name="arg_max_rotation_R"  default="4.0" />
+    <arg name="arg_min_rotation_R"  default="0.5" />
+    <arg name="srv_name"  default="/gen_map_aux_node/reflect_trajectory" />
+    <arg name="topic_name"  default="/trajectory_query_closed_loop" />
+    <arg name="bag_name"  default="auto_calibrate.bag" />
+    <arg name="gen_tra"  default="1" />
+    <arg name="use_carto"  default="false" />
+    <arg name="use_lio_sam"  default="false" />
+    <arg name="use_fast_lio"  default="true" />
+    <node name="test_cmd_node" pkg="vehicle_kinematics"  type="test_cmd_node" respawn="false" output="screen">
+        <param name="arg_max_vel"   value="$(arg arg_max_vel)" />
+        <param name="arg_movetime"   value="$(arg arg_movetime)" />
+        <param name="arg_delay_time"   value="$(arg arg_delay_time)" />
+        <param name="arg_max_rotation_R"   value="$(arg arg_max_rotation_R)" />
+        <param name="arg_min_rotation_R"   value="$(arg arg_min_rotation_R)" />
+        <param name="srv_name"   value="$(arg srv_name)" />
+        <param name="topic_name"   value="$(arg topic_name)" />
+        <param name="file_path"   value="/home/zc/.ros/" />
+        <param name="bag_name"   value="$(arg bag_name)" />
+        <param name="gen_tra"   value="$(arg gen_tra)" />
+         <param name="use_carto"   value="$(arg use_carto)" />    
+         <param name="use_lio_sam"   value="$(arg use_lio_sam)" />
+         <param name="use_fast_lio"   value="$(arg use_fast_lio)" />         
+        <remap from="/trajectory_auto_calibrate" to="/vehicle_cmd" />  
+
+    </node>
+
+</launch>

@@ -1,0 +1,21 @@
+<launch>
+    <arg name="pub_lidar_tf"  default="false" />
+    <arg name="omv_equivalent"  default="false" />
+    <arg name="pub_odom"  default="false" />
+    <arg name="use_imu"  default="false" />
+    <node pkg="vehicle_kinematics" type="vehicle_kinematics_node" name="vehicle_kinematics_node" output="screen">
+    <!-- <node pkg="vehicle_kinematics" type="vehicle_kinematics_node" name="vehicle_kinematics_node"> -->
+        <rosparam file="/opt/robot_data/vehicle_config/vehicle_information.yaml" command="load"/>
+        <rosparam file="/opt/robot_data/vehicle_config/odom_calibrate_config.yaml" command="load"/>
+        <param name="pub_lidar_tf"   value="$(arg pub_lidar_tf)" /> 
+        <param name="omv_equivalent"   value="$(arg omv_equivalent)" /> 
+        <param name="pub_odom"   value="$(arg pub_odom)" /> 
+        <param name="use_imu"   value="$(arg use_imu)" /> 
+        <param name="config_file" type="string" value="$(find common)/vehicle_config/" />
+        <param name="vehicle_type" type="string" value="single_servo" />
+        <!-- <remap from="/servo_cmd" to="/servo_cmd_k" />  
+        <remap from="/odom" to="/odom_k" />  
+        <remap from="/auto_calibrate_odom" to="/auto_calibrate_odom_k" />   -->
+
+    </node>
+</launch>
