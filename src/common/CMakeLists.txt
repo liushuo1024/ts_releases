@@ -21,8 +21,12 @@ add_message_files(
    omv_servo_cmd.msg
    omv_servo_encoder.msg
    servo_omv_cmd.msg
+   servo_cmd.msg
+   servo_encoder.msg
    ConstErrorCode.msg
    safe_lidar_state.msg
+   MovingTaskFeedback.msg
+   remote_ctrl_mode.msg
 )
 add_service_files(
    FILES
