@@ -1,0 +1,15 @@
+# 舵轮模型相关参数
+
+k_red_ratio:    1 # 行走电机减速比
+k_passive_red_ratio: 274.95 #从动轮减速比，9.165*30
+
+radius_steering_wheel: 0.12 # 主舵轮的半径
+
+L_base:   1.61 # 单位:米,轴距
+L_base_y:   0 # 单位:米,主动轮在y轴上的偏距，位于车体左边为正数
+
+L_passive_tread:  1.42   # 从动轮之间的距离
+L_passive_base:   0.7   # 从动轮到base之间的距离
+
+L_vehicle_length: 2.4   #车体长度
+L_steering_front: 0.29  #前轮到车头的距离 
