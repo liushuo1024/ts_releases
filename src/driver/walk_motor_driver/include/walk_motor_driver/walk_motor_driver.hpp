@@ -133,6 +133,7 @@ private:
   bool left_steer_neg_ = false,right_steer_neg_ = false;
 
   double last_send_enable_time_ = 0;
+  double start_time_ = 0;
 };
 
 }  // namespace walk_motor_driver

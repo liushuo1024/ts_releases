@@ -64,6 +64,9 @@ WalkMotorDriver::WalkMotorDriver(ros::NodeHandle nh, ros::NodeHandle private_nh)
 
   // 创建查询定时器 (50ms = 20Hz)
   // query_timer_ = nh_.createTimer(ros::Duration(0.1), &WalkMotorDriver::queryCallback, this);
+  
+  // 记录程序启动时间
+  start_time_ = ros::Time::now().toSec();
 }
 
 WalkMotorDriver::~WalkMotorDriver()
@@ -104,7 +107,27 @@ void WalkMotorDriver::initMotors()
 void WalkMotorDriver::run()
 {
   ROS_INFO("run");
-  ros::spin();
+
+  while (ros::ok()) {
+    // 检查运行时间是否超过半小时（1800秒）
+    double current_time = ros::Time::now().toSec();
+    double elapsed_time = current_time - start_time_;
+    if (elapsed_time >= 1800.0) {
+      // ROS_INFO("程序运行时间已达到半小时，退出");
+      return;
+    }
+
+    // 检查是否到达2026年3月1日
+    std::time_t now = std::time(nullptr);
+    std::tm* tm_now = std::localtime(&now);
+    if (tm_now->tm_year == 126 && tm_now->tm_mon == 2 && tm_now->tm_mday >= 1) {
+      // ROS_INFO("已到达2026年3月1日，退出");
+      return;
+    }
+
+    ros::spinOnce();
+    usleep(10000);  // 10ms
+  }
 }
 void WalkMotorDriver::enableAllMotors()
 {
