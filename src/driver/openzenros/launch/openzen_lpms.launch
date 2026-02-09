@@ -1,7 +1,0 @@
-<launch>
-    <!-- IG1 Sensor node -->
-    <node name="imu_lpms" pkg="openzen_sensor" type="openzen_sensor_node">
-        <param name="frame_id"   value="imu" />
-        <remap from="/imu/data" to="/raw_imu" />
-    </node>
-</launch>
