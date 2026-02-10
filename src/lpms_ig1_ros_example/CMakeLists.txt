@@ -112,3 +112,14 @@ add_dependencies(lpms_si1_node ${catkin_EXPORTED_TARGETS})
 add_executable(imudata_rad_to_deg_node src/imudata_rad_to_deg_node.cpp)
 target_link_libraries(imudata_rad_to_deg_node ${catkin_LIBRARIES})
 add_dependencies(imudata_rad_to_deg_node ${catkin_EXPORTED_TARGETS})
+
+
+install(TARGETS lpms_ig1_node lpms_ig1_rs485_node lpms_ig1_rs485_client
+ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY launch
+DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
