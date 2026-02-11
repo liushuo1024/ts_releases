@@ -1,0 +1,12 @@
+<launch>
+    <node name="like_usbcannode" pkg="usbcan"  type="like_usbcannode" output="screen" respawn = "true">
+        <rosparam file="/opt/robot_data/vehicle_config/can_config.yaml" command="load"/> 
+        <param name="loop_hz"   value= "4000" />   
+        <!-- <remap from="/can0_tx" to="/can_dbw_send1" />  
+        <remap from="/can0_rx" to="/can_dbw_recv" />  
+        <remap from="/can1_tx" to="/can_charge_send1" />  
+        <remap from="/can1_rx" to="/can_charge_recv" />   -->
+        
+    </node>
+
+</launch>

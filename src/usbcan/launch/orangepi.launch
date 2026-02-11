@@ -1,0 +1,14 @@
+<launch>
+    <node name="orangepi_cannode" pkg="usbcan"  type="orangepi_cannode" output="screen">
+        <!-- <remap from="/can0_tx" to="/can_dbw_send1" />  
+        <remap from="/can0_rx" to="/can_dbw_recv" />  
+        <remap from="/can1_tx" to="/can_charge_send1" />  
+        <remap from="/can1_rx" to="/can_charge_recv" />   -->
+        
+    </node>
+    <!-- <node pkg="tf" type="static_transform_publisher" 
+      args="1.2 0 0.0 0.0 0 0 pallet_link pick_fork_reach_point 10" name="base_link_to_pick_fork_reach_point"  /> -->
+    <node pkg="tf" type="static_transform_publisher" 
+      args="0.0 0 0.0 0.0 0 0 pallet_link pick_fork_reach_point 10" name="base_link_to_pick_fork_reach_point"  />
+
+</launch>
